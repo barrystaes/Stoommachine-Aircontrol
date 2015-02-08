@@ -22,26 +22,26 @@ void loop() {
   x = analogRead (0);
 
   lcd.setCursor(0,0);
-  lcd.print(x,OCT);
+  lcd.print(x);
   lcd.print("  ");
   
   lcd.setCursor(10,1);
   if (x < 60) {
-    lcd.print ("Right "); // 0
+    lcd.print("Right "); // 0
   }
   else if (x < 200) {
-    lcd.print ("Up    "); // 172
+    lcd.print("Up    "); // 122
   }
-  else if (x < 450){
-    lcd.print ("Down  "); // 412
+  else if (x < 300) {
+    lcd.print("Down  "); // 266
   }
-  else if (x < 650){
-    lcd.print ("Left  "); // 606
+  else if (x < 400) {
+    lcd.print("Left  "); // 390
   }
-  else if (x < 800){
-    lcd.print ("Select"); // 1033
+  else if (x < 600) {
+    lcd.print("Select"); // 539
   }
   else {
-    lcd.print ("None"); // 1265
+    lcd.print("None  "); // 693
   }
 }
