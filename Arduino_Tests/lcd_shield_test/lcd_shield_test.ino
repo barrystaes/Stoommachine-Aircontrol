@@ -4,6 +4,8 @@
 // include the library code:
 #include <LiquidCrystal.h>
 
+int loopcount = 0;
+
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
@@ -12,7 +14,8 @@ void setup() {
   lcd.begin(16, 2);
   // Print a message to the LCD.
   lcd.setCursor(0,0);
-  lcd.print("LCD Key Shield");
+  //lcd.print("LCD Key Shield");
+  lcd.print  ("     Posterholt");
   lcd.setCursor(0,1);
   lcd.print("Press Key:");
 }
@@ -20,9 +23,11 @@ void setup() {
 void loop() {
   int x;
   x = analogRead (0);
+  
+  loopcount++;
 
   lcd.setCursor(0,0);
-  lcd.print(x);
+  lcd.print(loopcount);
   lcd.print("  ");
   
   lcd.setCursor(10,1);
@@ -44,4 +49,6 @@ void loop() {
   else {
     lcd.print("None  "); // 693
   }
+  
+  
 }
