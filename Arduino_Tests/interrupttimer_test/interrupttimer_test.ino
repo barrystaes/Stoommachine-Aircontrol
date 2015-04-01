@@ -1,51 +1,55 @@
 /*
- *  Timer1 library example
- *  June 2008 | jesse dot tane at gmail dot com
- *
- *  Based on http://playground.arduino.cc/Code/Timer1 
- *  Attach dfrobot LCD shield.
+ *  DueTimer + UTFT test
  */
 
 // include the library code:
-#include <LiquidCrystal.h>
-#include <TimerOne.h>
+#include <UTFT.h>
+#include <DueTimer.h>
+
+extern uint8_t SmallFont[];
+extern uint8_t BigFont[];
+extern uint8_t SevenSegNumFont[];
 
 int intcount = 0;
 int loopcount = 0;
 
-// initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
+UTFT myGLCD(SSD1289,38,39,40,41);
  
 void setup()
 {
-  //Serial.begin(9600);
+  myGLCD.InitLCD();
+  myGLCD.setBackColor(0, 0, 0);
+  myGLCD.clrScr();
   
-  lcd.begin(16, 2);
-  lcd.setCursor(0,0);
-  lcd.print  ("Timer:          ");
-  lcd.setCursor(0,1);
-  lcd.print  ("Loops:          ");
+  myGLCD.setFont(BigFont);
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.print("STOOMMACHINE DEMO", CENTER, 0);
+  myGLCD.print("(sensor timer)", CENTER, 100);
+  myGLCD.print("(render loop)", CENTER, 220);
   
-  //pinMode(10, OUTPUT);
-  Timer1.initialize(500000);           // initialize timer1, and set a 1/2 second period (try 5000, then try again with Serial code uncommented)
-  Timer1.pwm(2, 128);                // setup pwm on pin 2, 512=50% duty cycle. LCD shield backlight blinks a few times per second.
-  Timer1.attachInterrupt(callback);  // attaches callback() as a timer overflow interrupt
+  myGLCD.setFont(SmallFont);
+  myGLCD.setColor(0, 255, 255);
+  myGLCD.print("Interrupt timer counter:", CENTER, 30);
+  myGLCD.print("Loop counter:", CENTER, 140);
+  
+  myGLCD.setFont(SevenSegNumFont);
+  myGLCD.setColor(255, 0, 0);
+  
+  Timer3.attachInterrupt(callback).setFrequency(1000).start();
 }
  
 void callback()
 {
-  //digitalWrite(10, digitalRead(10) ^ 1);
+  digitalWrite(13, digitalRead(13) ^ 1);
   intcount++;
 }
  
 void loop()
 {
-  lcd.setCursor(7,0);
-  lcd.print(intcount);
+  myGLCD.printNumI(intcount, CENTER, 50);
   
   loopcount++;
-  lcd.setCursor(7,1);
-  lcd.print(loopcount);
+  myGLCD.printNumI(loopcount, CENTER, 160);
   
   //Serial.print("intcount=");   Serial.print(intcount);
   //Serial.print("loopcount=");  Serial.print(loopcount);
