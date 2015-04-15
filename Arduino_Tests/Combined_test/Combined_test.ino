@@ -19,10 +19,13 @@ int pinRelay5 = 6;
 int pinRelay6 = 7;
 int pinRelay7 = 8;
 int pinRelay8 = 9;
+int pinSensor1 = 10;
 
 int activeRelay = 0;
 int intcount = 0;
 int loopcount = 0;
+int sensorState = 0;
+int sensorCount = 0;
 
 UTFT myGLCD(SSD1289,38,39,40,41);
  
@@ -43,7 +46,8 @@ void setup() {
   myGLCD.print("Interrupt timer counter:", CENTER, 30);
   myGLCD.print("Loop counter:", CENTER, 140);
   
-  myGLCD.setFont(SevenSegNumFont);
+  //myGLCD.setFont(SevenSegNumFont);
+  myGLCD.setFont(BigFont);
   myGLCD.setColor(255, 0, 0);
   
   Timer2.attachInterrupt(timer_SensorTest).setFrequency(1000).start();
@@ -62,10 +66,22 @@ void setup() {
 
   Timer3.attachInterrupt(timer_Relaytest);
   Timer3.start(500000); // Calls every 500ms
+  
+  
+  // Sensor test
+  pinMode(pinSensor1, INPUT_PULLUP);
 }
 
 void timer_SensorTest() {
   intcount++;
+  
+  int sensor1 = digitalRead(pinSensor1);
+  digitalWrite(pinLed, sensor1);
+  
+  if (sensor1 != sensorState) {
+    sensorState = sensor1;
+    sensorCount++;
+  }
 }
 
 void timer_Relaytest() {
@@ -81,7 +97,7 @@ void timer_Relaytest() {
   digitalWrite(pinRelay7, activeRelay!=13);
   digitalWrite(pinRelay8, activeRelay!=15);
   
-  digitalWrite(pinLed, activeRelay % 2);
+  //digitalWrite(pinLed, activeRelay % 2);
 }
  
 void loop() {
@@ -90,6 +106,8 @@ void loop() {
   
   loopcount++;
   myGLCD.printNumI(loopcount, CENTER, 160);
+  
+  myGLCD.printNumI(sensorCount, RIGHT, 100);
   
   myGLCD.setColor(0, 0, 255);
   myGLCD.fillRect(0,40,20,210);
@@ -100,6 +118,8 @@ void loop() {
     myGLCD.setColor(0, 255, 0);
     myGLCD.fillCircle(10, 50 + (10 * activeRelay), 10);
   }
+  
+  
   
   //Serial.print("intcount=");   Serial.print(intcount);
   //Serial.print("loopcount=");  Serial.print(loopcount);
