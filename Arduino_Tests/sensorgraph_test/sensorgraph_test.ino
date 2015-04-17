@@ -5,6 +5,7 @@
 // Includes
 #include <UTFT.h>
 #include <DueTimer.h>
+#include "SensorGraph.h"
 extern uint8_t BigFont[];
 
 // Configure wiring
@@ -30,6 +31,8 @@ boolean nowSensor1 = false;
 int togSensor1 = 0;
 
 UTFT myGLCD(SSD1289,38,39,40,41);
+
+SensorGraph SG;
  
 void setup() {
   // Draw backdrop
@@ -42,6 +45,8 @@ void setup() {
   myGLCD.setColor(styleBgColor);
   myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
 
+  SG.Init();
+
   // Sensor wiring
   pinMode(pinSensor1, INPUT_PULLUP);
   pinMode(pinSensor2, INPUT_PULLUP);
@@ -53,37 +58,12 @@ void setup() {
 }
 
 void timer_SensorRead() {
-  boolean m = (digitalRead(pinSensor1) == HIGH);
-  
-  // Stats
-  if (nowSensor1 != m) { togSensor1++; }
-  nowSensor1 = m;
-    
-  // Log
-  logPos++;
-  if (logPos >= logSize) { logPos = 0; } // wrap around
-  logSensor1[logPos] = m;
+  SG.Log(digitalRead(pinSensor1) == HIGH);
 }
  
 void loop() {
+  SG.Render(myGLCD);
   
-  // Draw entire screen
-  myGLCD.setColor(styleBgColor);
-  myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
-  myGLCD.setColor(styleColors[0]);
-  myGLCD.printNumI(togSensor1, CENTER, 200);
-  for (int i=0; i<=logSize; i++) {
-    if (logSensor1[i]) {
-      myGLCD.drawPixel(i,50);
-    } else {
-      myGLCD.drawPixel(i,100);
-    }
-    if (i == logPos) { 
-      myGLCD.setColor(styleScanColor);
-      myGLCD.drawLine(i, styleWindow1[1]+1, i, styleWindow1[3]-1);
-      myGLCD.setColor(styleColors[0]);
-    }
-  }
   
 //  Serial.print("togSensor1=");   Serial.print(togSensor1);
 //  Serial.print(" nowSensor1=");  Serial.print(nowSensor1);
