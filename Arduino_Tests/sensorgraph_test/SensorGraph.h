@@ -20,6 +20,7 @@ class SensorGraph
     void Init();
     void Log(boolean m);
     void Render(UTFT myGLCD);
+    void RenderBackground(UTFT myGLCD);
   private:
     int styleBgColor;
     int styleScanColor;

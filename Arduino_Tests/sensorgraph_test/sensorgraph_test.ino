@@ -16,19 +16,6 @@ int pinSensor4 = 13;
 
 // Configure logging
 const int SensorReadsPerSecond = 100; // setting
-const int logSize = 320; // setting
-
-// Styling
-int styleBgColor = VGA_BLACK;
-int styleScanColor = VGA_WHITE;
-int styleColors[] = {VGA_RED, VGA_BLUE, VGA_YELLOW, VGA_FUCHSIA, VGA_LIME, VGA_AQUA};
-int styleWindow1[] = {0, 19, 319, 119};
-
-// Initialize
-int logPos = 0;
-boolean logSensor1[logSize];
-boolean nowSensor1 = false;
-int togSensor1 = 0;
 
 UTFT myGLCD(SSD1289,38,39,40,41);
 
@@ -41,12 +28,10 @@ void setup() {
   myGLCD.setFont(BigFont);
   myGLCD.setColor(255, 255, 255);
   myGLCD.print("STOOMMACHINE DEMO", CENTER, 0);
-  myGLCD.drawRect(styleWindow1[0],   styleWindow1[1],   styleWindow1[2],   styleWindow1[3]  );
-  myGLCD.setColor(styleBgColor);
-  myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
 
   SG.Init();
-
+  SG.RenderBackground(myGLCD);
+  
   // Sensor wiring
   pinMode(pinSensor1, INPUT_PULLUP);
   pinMode(pinSensor2, INPUT_PULLUP);

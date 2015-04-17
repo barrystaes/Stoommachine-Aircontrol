@@ -71,3 +71,12 @@ void SensorGraph::Render(UTFT myGLCD)
     }
   }
 }
+
+void SensorGraph::RenderBackground(UTFT myGLCD)
+{
+  int styleWindow1[4] = {0, 19, 319, 119};
+  myGLCD.drawRect(styleWindow1[0],   styleWindow1[1],   styleWindow1[2],   styleWindow1[3]  );
+  myGLCD.setColor(styleBgColor);
+  myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
+
+}
