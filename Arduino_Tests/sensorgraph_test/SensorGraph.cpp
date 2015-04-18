@@ -14,19 +14,27 @@ SensorGraph::SensorGraph()
 
 void SensorGraph::Init()
 {
-        // Set logSize in .h file.
-  
-        // Styling
-        styleBgColor = VGA_BLACK;
-        styleScanColor = VGA_WHITE;
-        //styleColors[6] = {VGA_RED, VGA_BLUE, VGA_YELLOW, VGA_FUCHSIA, VGA_LIME, VGA_AQUA};
-        //styleWindow1[4] = {0, 19, 319, 119};
+  // Set logSize in .h file.
 
-	// Initialize
-	logPos = 0;
-	logSensor1[LOGSIZE];
-	nowSensor1 = false;
-	togSensor1 = 0;
+  // Styling
+  styleBgColor = VGA_BLACK;
+  styleScanColor = VGA_WHITE;
+  styleSeriesColor = VGA_RED;
+
+  // Initialize
+  logPos = 0;
+  logSensor1[LOGSIZE];
+  nowSensor1 = false;
+  togSensor1 = 0;
+
+  // Defaults
+  styleSeriesColor = VGA_YELLOW;
+  wx1 = 0;
+  wy1 = 19;
+  ww = 320;
+  wh = 100;
+  wx2 = wx1 + ww;
+  wy2 = wy1 + wh;
 }
 
 void SensorGraph::Log(boolean m)
@@ -43,40 +51,46 @@ void SensorGraph::Log(boolean m)
 
 void SensorGraph::Render(UTFT myGLCD)
 {
-  int styleWindow1[4] = {0, 19, 319, 119};
-  int h = (styleWindow1[3] - styleWindow1[1]) / 2;
-  int styleColors[6] = {VGA_RED, VGA_BLUE, VGA_YELLOW, VGA_FUCHSIA, VGA_LIME, VGA_AQUA};
+  int h = wh / 2;
   
   // Draw entire screen
-  //myGLCD.setColor(styleBgColor);
-  //myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
-  myGLCD.setColor(styleColors[0]);
-  myGLCD.printNumI(togSensor1, CENTER, 200);
+  myGLCD.setColor(styleSeriesColor);
+  myGLCD.printNumI(togSensor1, wx1, wy1);
   for (int i=0; i<=LOGSIZE; i++) {
     if (logSensor1[i]) {
-      myGLCD.setColor(styleColors[0]);
-      myGLCD.drawLine(i, styleWindow1[1]+1,     i, styleWindow1[1]+ h);  // top
+      myGLCD.setColor(styleSeriesColor);
+      myGLCD.drawLine(i, wy1+1,     i, wy1+ h);  // top
       myGLCD.setColor(styleBgColor);
-      myGLCD.drawLine(i, styleWindow1[1]+1 + h, i, styleWindow1[3]-1 );
+      myGLCD.drawLine(i, wy1+1 + h, i, wy2-1 );
     } else {
       myGLCD.setColor(styleBgColor);
-      myGLCD.drawLine(i, styleWindow1[1]+1,     i, styleWindow1[1]+ h);
-      myGLCD.setColor(styleColors[0]);
-      myGLCD.drawLine(i, styleWindow1[1]+1 + h, i, styleWindow1[3]-1 ); // bottom
+      myGLCD.drawLine(i, wy1+1,     i, wy1+ h);
+      myGLCD.setColor(styleSeriesColor);
+      myGLCD.drawLine(i, wy1+1 + h, i, wy2-1 ); // bottom
     }
     if (i == logPos) { 
       myGLCD.setColor(styleScanColor);
-      myGLCD.drawLine(i, styleWindow1[1]+1, i, styleWindow1[3]-1);
-      myGLCD.setColor(styleColors[0]);
+      myGLCD.drawLine(i, wy1+1, i, wy2-1);
     }
   }
 }
 
 void SensorGraph::RenderBackground(UTFT myGLCD)
 {
-  int styleWindow1[4] = {0, 19, 319, 119};
-  myGLCD.drawRect(styleWindow1[0],   styleWindow1[1],   styleWindow1[2],   styleWindow1[3]  );
+  myGLCD.drawRect(wx1,   wy1,   wx2,   wy2  );
   myGLCD.setColor(styleBgColor);
-  myGLCD.fillRect(styleWindow1[0]+1, styleWindow1[1]+1, styleWindow1[2]-1, styleWindow1[3]-1);
+  myGLCD.fillRect(wx1+1, wy1+1, wx2-1, wy2-1);
+}
 
+int SensorGraph::AddSeries(int color, int x, int y, int w, int h)
+{
+  styleSeriesColor = color;
+  wx1 = x;
+  wy1 = y;
+  ww = w;
+  wh = h;
+  wx2 = wx1 + ww;
+  wy2 = wy1 + wh;
+
+  return -1;  // todo enable more series
 }

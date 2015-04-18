@@ -31,6 +31,7 @@ void setup() {
 
   SG.Init();
   SG.RenderBackground(myGLCD);
+  SG.AddSeries(VGA_LIME, 0, 19, 320, 120);
   
   // Sensor wiring
   pinMode(pinSensor1, INPUT_PULLUP);
