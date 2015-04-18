@@ -54,8 +54,6 @@ void SensorGraph::Render(UTFT myGLCD)
   int h = wh / 2;
   
   // Draw entire screen
-  myGLCD.setColor(styleSeriesColor);
-  myGLCD.printNumI(togSensor1, wx1, wy1);
   for (int i=0; i<=LOGSIZE; i++) {
     if (logSensor1[i]) {
       myGLCD.setColor(styleSeriesColor);
@@ -71,8 +69,11 @@ void SensorGraph::Render(UTFT myGLCD)
     if (i == logPos) { 
       myGLCD.setColor(styleScanColor);
       myGLCD.drawLine(i, wy1+1, i, wy2-1);
+      //myGLCD.setColor(styleSeriesColor);
     }
   }
+  myGLCD.setColor(styleSeriesColor);
+  myGLCD.printNumI(togSensor1, RIGHT, wy1);
 }
 
 void SensorGraph::RenderBackground(UTFT myGLCD)

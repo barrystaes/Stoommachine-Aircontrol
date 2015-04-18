@@ -19,7 +19,9 @@ const int SensorReadsPerSecond = 100; // setting
 
 UTFT myGLCD(SSD1289,38,39,40,41);
 
-SensorGraph SG;
+SensorGraph SG1;
+SensorGraph SG2;
+SensorGraph SG3;
  
 void setup() {
   // Draw backdrop
@@ -29,9 +31,17 @@ void setup() {
   myGLCD.setColor(255, 255, 255);
   myGLCD.print("STOOMMACHINE DEMO", CENTER, 0);
 
-  SG.Init();
-  SG.RenderBackground(myGLCD);
-  SG.AddSeries(VGA_LIME, 0, 19, 320, 120);
+  SG1.Init();
+  SG1.RenderBackground(myGLCD);
+  SG1.AddSeries(VGA_RED, 0, 19, 320, 80);
+  
+  SG2.Init();
+  SG2.RenderBackground(myGLCD);
+  SG2.AddSeries(VGA_BLUE, 0, 99, 320, 80);
+    
+  SG3.Init();
+  SG3.RenderBackground(myGLCD);
+  SG3.AddSeries(VGA_YELLOW, 0, 199, 320, 40);
   
   // Sensor wiring
   pinMode(pinSensor1, INPUT_PULLUP);
@@ -44,11 +54,15 @@ void setup() {
 }
 
 void timer_SensorRead() {
-  SG.Log(digitalRead(pinSensor1) == HIGH);
+  SG1.Log(digitalRead(pinSensor1) == HIGH);
+  SG2.Log(digitalRead(pinSensor2) == HIGH);
+  SG3.Log(digitalRead(pinSensor3) == HIGH);
 }
  
 void loop() {
-  SG.Render(myGLCD);
+  SG1.Render(myGLCD);
+  SG2.Render(myGLCD);
+  SG3.Render(myGLCD);
   
   
 //  Serial.print("togSensor1=");   Serial.print(togSensor1);
