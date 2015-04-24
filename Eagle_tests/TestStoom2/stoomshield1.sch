@@ -7015,9 +7015,8 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="OK1" library="optocoupler" deviceset="4N35" device=""/>
 <part name="SENSOR1" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="P+4" library="supply1" deviceset="+24V" device=""/>
-<part name="R1" library="resistor" deviceset="R-EU_" device="0207/5V" value="1500"/>
 <part name="LED1" library="led" deviceset="LED" device="5MM"/>
-<part name="R2" library="resistor" deviceset="R-EU_" device="0204/5"/>
+<part name="R2" library="resistor" deviceset="R-EU_" device="0204/5" value="65"/>
 <part name="P+6" library="supply1" deviceset="+5V" device=""/>
 <part name="P+7" library="supply1" deviceset="+5V" device=""/>
 <part name="P+8" library="supply1" deviceset="+5V" device=""/>
@@ -7033,37 +7032,40 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="OK2" library="optocoupler" deviceset="4N35" device=""/>
 <part name="SENSOR2" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="P+1" library="supply1" deviceset="+24V" device=""/>
-<part name="R3" library="resistor" deviceset="R-EU_" device="0207/5V" value="1500"/>
 <part name="SUPPLY3" library="supply2" deviceset="GND1" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="OK3" library="optocoupler" deviceset="4N35" device=""/>
 <part name="SENSOR3" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="P+3" library="supply1" deviceset="+24V" device=""/>
-<part name="R5" library="resistor" deviceset="R-EU_" device="0207/5V" value="1500"/>
 <part name="SUPPLY4" library="supply2" deviceset="GND1" device=""/>
 <part name="OK4" library="optocoupler" deviceset="4N35" device=""/>
 <part name="SENSOR4" library="con-wago-508" deviceset="W237-03P" device=""/>
 <part name="P+13" library="supply1" deviceset="+24V" device=""/>
-<part name="R7" library="resistor" deviceset="R-EU_" device="0207/5V" value="1500"/>
 <part name="SUPPLY5" library="supply2" deviceset="GND1" device=""/>
 <part name="R9" library="resistor" deviceset="R-EU_" device="0204/5" value="10000"/>
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
 <part name="LED2" library="led" deviceset="LED" device="5MM"/>
-<part name="R4" library="resistor" deviceset="R-EU_" device="0204/5"/>
+<part name="R4" library="resistor" deviceset="R-EU_" device="0204/5" value="65"/>
 <part name="R10" library="resistor" deviceset="R-EU_" device="0204/5" value="10000"/>
 <part name="P+2" library="supply1" deviceset="+5V" device=""/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="LED3" library="led" deviceset="LED" device="5MM"/>
-<part name="R6" library="resistor" deviceset="R-EU_" device="0204/5"/>
+<part name="R6" library="resistor" deviceset="R-EU_" device="0204/5" value="65"/>
 <part name="R11" library="resistor" deviceset="R-EU_" device="0204/5" value="10000"/>
 <part name="P+12" library="supply1" deviceset="+5V" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
 <part name="LED4" library="led" deviceset="LED" device="5MM"/>
-<part name="R8" library="resistor" deviceset="R-EU_" device="0204/5"/>
+<part name="R8" library="resistor" deviceset="R-EU_" device="0204/5" value="65"/>
 <part name="R12" library="resistor" deviceset="R-EU_" device="0204/5" value="10000"/>
 <part name="P+14" library="supply1" deviceset="+5V" device=""/>
 <part name="P+9" library="supply1" deviceset="+24V" device=""/>
-<part name="SENSOR_PWR" library="con-wago-508" deviceset="W237-02P" device=""/>
+<part name="PWR_24V" library="con-wago-508" deviceset="W237-02P" device=""/>
+<part name="PWR_5V" library="con-wago-508" deviceset="W237-02P" device=""/>
+<part name="P+15" library="supply1" deviceset="+5V" device=""/>
+<part name="R13" library="resistor" deviceset="R-EU_" device="0204/5" value="1500"/>
+<part name="R7" library="resistor" deviceset="R-EU_" device="0204/5" value="1500"/>
+<part name="R14" library="resistor" deviceset="R-EU_" device="0204/5" value="1500"/>
+<part name="R15" library="resistor" deviceset="R-EU_" device="0204/5" value="1500"/>
 </parts>
 <sheets>
 <sheet>
@@ -7163,7 +7165,6 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="SENSOR1" gate="-2" x="15.24" y="-147.32"/>
 <instance part="SENSOR1" gate="-3" x="15.24" y="-152.4"/>
 <instance part="P+4" gate="1" x="33.02" y="-127"/>
-<instance part="R1" gate="G$1" x="30.48" y="-147.32"/>
 <instance part="LED1" gate="G$1" x="71.12" y="-142.24" rot="R180"/>
 <instance part="R2" gate="G$1" x="66.04" y="-134.62" rot="R180"/>
 <instance part="P+6" gate="1" x="7.62" y="-60.96"/>
@@ -7183,7 +7184,6 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="SENSOR2" gate="-2" x="15.24" y="-198.12"/>
 <instance part="SENSOR2" gate="-3" x="15.24" y="-203.2"/>
 <instance part="P+1" gate="1" x="33.02" y="-177.8"/>
-<instance part="R3" gate="G$1" x="30.48" y="-198.12"/>
 <instance part="SUPPLY3" gate="G$1" x="33.02" y="-213.36"/>
 <instance part="GND9" gate="1" x="60.96" y="-213.36"/>
 <instance part="OK3" gate="G$1" x="48.26" y="-251.46"/>
@@ -7191,14 +7191,12 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="SENSOR3" gate="-2" x="15.24" y="-248.92"/>
 <instance part="SENSOR3" gate="-3" x="15.24" y="-254"/>
 <instance part="P+3" gate="1" x="33.02" y="-228.6"/>
-<instance part="R5" gate="G$1" x="30.48" y="-248.92"/>
 <instance part="SUPPLY4" gate="G$1" x="33.02" y="-266.7"/>
 <instance part="OK4" gate="G$1" x="48.26" y="-302.26"/>
 <instance part="SENSOR4" gate="-1" x="15.24" y="-294.64"/>
 <instance part="SENSOR4" gate="-2" x="15.24" y="-299.72"/>
 <instance part="SENSOR4" gate="-3" x="15.24" y="-304.8"/>
 <instance part="P+13" gate="1" x="33.02" y="-279.4"/>
-<instance part="R7" gate="G$1" x="30.48" y="-299.72"/>
 <instance part="SUPPLY5" gate="G$1" x="33.02" y="-314.96"/>
 <instance part="R9" gate="G$1" x="60.96" y="-142.24" rot="R270"/>
 <instance part="P+5" gate="1" x="60.96" y="-127"/>
@@ -7217,8 +7215,15 @@ In this library the device names are the same as the pin names of the symbols, t
 <instance part="R12" gate="G$1" x="60.96" y="-294.64" rot="R270"/>
 <instance part="P+14" gate="1" x="60.96" y="-279.4"/>
 <instance part="P+9" gate="1" x="33.02" y="-327.66"/>
-<instance part="SENSOR_PWR" gate="-1" x="15.24" y="-342.9"/>
-<instance part="SENSOR_PWR" gate="-2" x="15.24" y="-337.82"/>
+<instance part="PWR_24V" gate="-1" x="15.24" y="-342.9"/>
+<instance part="PWR_24V" gate="-2" x="15.24" y="-337.82"/>
+<instance part="PWR_5V" gate="-1" x="78.74" y="-337.82" rot="R180"/>
+<instance part="PWR_5V" gate="-2" x="78.74" y="-342.9" rot="R180"/>
+<instance part="P+15" gate="1" x="60.96" y="-327.66"/>
+<instance part="R13" gate="G$1" x="30.48" y="-299.72"/>
+<instance part="R7" gate="G$1" x="30.48" y="-248.92"/>
+<instance part="R14" gate="G$1" x="30.48" y="-198.12"/>
+<instance part="R15" gate="G$1" x="30.48" y="-147.32"/>
 </instances>
 <busses>
 </busses>
@@ -7411,6 +7416,11 @@ In this library the device names are the same as the pin names of the symbols, t
 <wire x1="60.96" y1="-347.98" x2="60.96" y2="-350.52" width="0.1524" layer="91"/>
 <wire x1="55.88" y1="-347.98" x2="60.96" y2="-347.98" width="0.1524" layer="91"/>
 <junction x="55.88" y="-347.98"/>
+<pinref part="PWR_5V" gate="-2" pin="KL"/>
+<wire x1="73.66" y1="-342.9" x2="60.96" y2="-342.9" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="-342.9" x2="60.96" y2="-347.98" width="0.1524" layer="91"/>
+<junction x="60.96" y="-347.98"/>
+<junction x="73.66" y="-342.9"/>
 </segment>
 <segment>
 <pinref part="GND7" gate="1" pin="GND"/>
@@ -7978,27 +7988,27 @@ In this library the device names are the same as the pin names of the symbols, t
 <pinref part="P+9" gate="1" pin="+24V"/>
 <wire x1="33.02" y1="-337.82" x2="33.02" y2="-330.2" width="0.1524" layer="91"/>
 <junction x="33.02" y="-330.2"/>
-<pinref part="SENSOR_PWR" gate="-2" pin="KL"/>
+<pinref part="PWR_24V" gate="-2" pin="KL"/>
 <wire x1="20.32" y1="-337.82" x2="33.02" y2="-337.82" width="0.1524" layer="91"/>
 <junction x="20.32" y="-337.82"/>
 </segment>
 </net>
 <net name="N$4" class="0">
 <segment>
-<pinref part="R1" gate="G$1" pin="2"/>
 <pinref part="OK1" gate="G$1" pin="A"/>
 <wire x1="35.56" y1="-147.32" x2="38.1" y2="-147.32" width="0.1524" layer="91"/>
-<junction x="35.56" y="-147.32"/>
 <junction x="38.1" y="-147.32"/>
+<pinref part="R15" gate="G$1" pin="2"/>
+<junction x="35.56" y="-147.32"/>
 </segment>
 </net>
 <net name="N$3" class="0">
 <segment>
 <pinref part="SENSOR1" gate="-2" pin="KL"/>
-<pinref part="R1" gate="G$1" pin="1"/>
 <wire x1="20.32" y1="-147.32" x2="25.4" y2="-147.32" width="0.1524" layer="91"/>
-<junction x="25.4" y="-147.32"/>
 <junction x="20.32" y="-147.32"/>
+<pinref part="R15" gate="G$1" pin="1"/>
+<junction x="25.4" y="-147.32"/>
 </segment>
 </net>
 <net name="DUE_SENSOR1" class="0">
@@ -8119,6 +8129,14 @@ In this library the device names are the same as the pin names of the symbols, t
 <junction x="60.96" y="-287.02"/>
 <junction x="60.96" y="-289.56"/>
 </segment>
+<segment>
+<pinref part="PWR_5V" gate="-1" pin="KL"/>
+<pinref part="P+15" gate="1" pin="+5V"/>
+<wire x1="73.66" y1="-337.82" x2="60.96" y2="-337.82" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="-337.82" x2="60.96" y2="-330.2" width="0.1524" layer="91"/>
+<junction x="73.66" y="-337.82"/>
+<junction x="60.96" y="-330.2"/>
+</segment>
 </net>
 <net name="+3V3" class="0">
 <segment>
@@ -8147,7 +8165,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <junction x="33.02" y="-350.52"/>
 <wire x1="33.02" y1="-342.9" x2="33.02" y2="-347.98" width="0.1524" layer="91"/>
 <junction x="33.02" y="-347.98"/>
-<pinref part="SENSOR_PWR" gate="-1" pin="KL"/>
+<pinref part="PWR_24V" gate="-1" pin="KL"/>
 <wire x1="33.02" y1="-342.9" x2="20.32" y2="-342.9" width="0.1524" layer="91"/>
 <junction x="20.32" y="-342.9"/>
 </segment>
@@ -8206,56 +8224,56 @@ In this library the device names are the same as the pin names of the symbols, t
 </net>
 <net name="N$6" class="0">
 <segment>
-<pinref part="R3" gate="G$1" pin="2"/>
 <pinref part="OK2" gate="G$1" pin="A"/>
 <wire x1="35.56" y1="-198.12" x2="38.1" y2="-198.12" width="0.1524" layer="91"/>
-<junction x="35.56" y="-198.12"/>
 <junction x="38.1" y="-198.12"/>
+<pinref part="R14" gate="G$1" pin="2"/>
+<junction x="35.56" y="-198.12"/>
 </segment>
 </net>
 <net name="N$7" class="0">
 <segment>
 <pinref part="SENSOR2" gate="-2" pin="KL"/>
-<pinref part="R3" gate="G$1" pin="1"/>
 <wire x1="20.32" y1="-198.12" x2="25.4" y2="-198.12" width="0.1524" layer="91"/>
-<junction x="25.4" y="-198.12"/>
 <junction x="20.32" y="-198.12"/>
+<pinref part="R14" gate="G$1" pin="1"/>
+<junction x="25.4" y="-198.12"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
-<pinref part="R5" gate="G$1" pin="2"/>
 <pinref part="OK3" gate="G$1" pin="A"/>
 <wire x1="35.56" y1="-248.92" x2="38.1" y2="-248.92" width="0.1524" layer="91"/>
-<junction x="35.56" y="-248.92"/>
 <junction x="38.1" y="-248.92"/>
+<pinref part="R7" gate="G$1" pin="2"/>
+<junction x="35.56" y="-248.92"/>
 </segment>
 </net>
 <net name="N$10" class="0">
 <segment>
 <pinref part="SENSOR3" gate="-2" pin="KL"/>
-<pinref part="R5" gate="G$1" pin="1"/>
 <wire x1="20.32" y1="-248.92" x2="25.4" y2="-248.92" width="0.1524" layer="91"/>
-<junction x="25.4" y="-248.92"/>
 <junction x="20.32" y="-248.92"/>
+<pinref part="R7" gate="G$1" pin="1"/>
+<junction x="25.4" y="-248.92"/>
 </segment>
 </net>
 <net name="N$12" class="0">
 <segment>
-<pinref part="R7" gate="G$1" pin="2"/>
 <pinref part="OK4" gate="G$1" pin="A"/>
 <wire x1="35.56" y1="-299.72" x2="38.1" y2="-299.72" width="0.1524" layer="91"/>
-<junction x="35.56" y="-299.72"/>
 <junction x="38.1" y="-299.72"/>
+<pinref part="R13" gate="G$1" pin="2"/>
+<junction x="35.56" y="-299.72"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
 <pinref part="SENSOR4" gate="-2" pin="KL"/>
-<pinref part="R7" gate="G$1" pin="1"/>
 <wire x1="20.32" y1="-299.72" x2="25.4" y2="-299.72" width="0.1524" layer="91"/>
-<junction x="25.4" y="-299.72"/>
 <junction x="20.32" y="-299.72"/>
+<pinref part="R13" gate="G$1" pin="1"/>
+<junction x="25.4" y="-299.72"/>
 </segment>
 </net>
 <net name="DUE_SENSOR2" class="0">
