@@ -24,7 +24,8 @@ extern uint8_t SmallFont[];
 // ElecHouse TFT LCD/SD Shield for Arduino Due : <display model>,22,23,31,33
 //
 // Remember to change the model parameter to suit your display module!
-UTFT myGLCD(SSD1289,38,39,40,41);
+//UTFT myGLCD(SSD1289,38,39,40,41); // Default example wiring 
+UTFT myGLCD(SSD1289,40,41,38,39); // How i wired my prototype
 
 void setup()
 {
