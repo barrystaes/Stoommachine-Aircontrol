@@ -1,0 +1,39 @@
+TODO software:
+
+	- Optimal encoder read: all sensor bits at once, as byte.
+	- Track machine position (and error flags)
+	- Revolution dashboard: Render current position
+	- Revolution dashboard: Render revolutions, RPM, error flags.
+		
+	- Control relays based on machine position
+	- Revolution dashboard: Render relay timing 
+
+	- Read pressure sensor.
+	- Revolution dashboard: Render pressure sensor.
+
+	- Menu: dummy RPM target
+	- 
+
+
+TODO hardware (prototype 2 + schema) 
+
+	- Read pressure sensor (analog 20mA loop) proof of concept.
+	- Menu button breakout
+	- Buzzer for menu feedback
+	- LED WS2812B proof of concept
+	- Output machine position to PC
+	- Relay manual override dipswitches
+
+
+
+
+
+
+LINKS on design
+
+Quadratic Encoder (machine positie sensor, en menuknop)
+https://hifiduino.wordpress.com/2010/10/20/rotaryencoder-hw-sw-no-debounce/  effecient read
+http://en.wikipedia.org/wiki/Gray_code
+
+
+Speaker (op een DUE)
