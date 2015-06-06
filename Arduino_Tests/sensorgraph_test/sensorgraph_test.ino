@@ -9,15 +9,14 @@
 extern uint8_t BigFont[];
 
 // Configure wiring
-int pinSensor1 = 10;
-int pinSensor2 = 11;
-int pinSensor3 = 12;
-int pinSensor4 = 13;
+int pinSensor1 = 19;
+int pinSensor2 = 20;
+int pinSensor3 = 21;
 
 // Configure logging
-const int SensorReadsPerSecond = 100; // setting
+const int SensorReadsPerSecond = 1000; // setting
 
-UTFT myGLCD(SSD1289,38,39,40,41);
+UTFT myGLCD(SSD1289,40,41,38,39);
 
 SensorGraph SG1;
 SensorGraph SG2;
@@ -47,7 +46,6 @@ void setup() {
   pinMode(pinSensor1, INPUT_PULLUP);
   pinMode(pinSensor2, INPUT_PULLUP);
   pinMode(pinSensor3, INPUT_PULLUP);
-  pinMode(pinSensor4, INPUT_PULLUP);
   
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();

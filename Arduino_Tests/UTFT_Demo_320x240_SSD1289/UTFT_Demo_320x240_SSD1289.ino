@@ -26,6 +26,8 @@ extern uint8_t SmallFont[];
 // Remember to change the model parameter to suit your display module!
 //UTFT myGLCD(SSD1289,38,39,40,41); // Default example wiring 
 UTFT myGLCD(SSD1289,40,41,38,39); // How i wired my prototype
+// UTFT(Model, RS, WR, CS, RST[, ALE]);
+
 
 void setup()
 {

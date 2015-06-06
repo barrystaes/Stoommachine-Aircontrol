@@ -27,7 +27,7 @@ int loopcount = 0;
 int sensorState = 0;
 int sensorCount = 0;
 
-UTFT myGLCD(SSD1289,38,39,40,41);
+UTFT myGLCD(SSD1289,40,41,38,39);
  
 void setup() {
   // Sensor test
