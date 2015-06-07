@@ -10422,6 +10422,7 @@ Source: AVX .. aphvc.pdf</description>
 <part name="R15" library="resistor" deviceset="R-EU_" device="0204/5" value="1500"/>
 <part name="C1" library="rcl" deviceset="C-EU" device="025-024X044"/>
 <part name="JP1" library="jumper" deviceset="JP2E" device=""/>
+<part name="R1" library="resistor" deviceset="R-EU_" device="0204/5" value="10000"/>
 </parts>
 <sheets>
 <sheet>
@@ -10581,6 +10582,7 @@ Source: AVX .. aphvc.pdf</description>
 <instance part="R15" gate="G$1" x="30.48" y="-147.32"/>
 <instance part="C1" gate="G$1" x="60.96" y="-71.12" rot="R90"/>
 <instance part="JP1" gate="1" x="68.58" y="-55.88" rot="R90"/>
+<instance part="R1" gate="G$1" x="12.7" y="53.34"/>
 </instances>
 <busses>
 </busses>
@@ -11504,11 +11506,12 @@ Source: AVX .. aphvc.pdf</description>
 <junction x="5.08" y="121.92"/>
 </segment>
 <segment>
-<pinref part="TFT" gate="-29" pin="S"/>
-<wire x1="25.4" y1="53.34" x2="5.08" y2="53.34" width="0.1524" layer="91"/>
-<wire x1="5.08" y1="53.34" x2="5.08" y2="55.88" width="0.1524" layer="91"/>
-<junction x="25.4" y="53.34"/>
+<pinref part="R1" gate="G$1" pin="1"/>
+<wire x1="7.62" y1="53.34" x2="5.08" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="+3V2" gate="G$1" pin="+3V3"/>
+<wire x1="5.08" y1="53.34" x2="5.08" y2="55.88" width="0.1524" layer="91"/>
+<junction x="5.08" y="55.88"/>
+<junction x="7.62" y="53.34"/>
 </segment>
 </net>
 <net name="GND1" class="0">
@@ -11737,6 +11740,15 @@ Source: AVX .. aphvc.pdf</description>
 <wire x1="78.74" y1="-55.88" x2="71.12" y2="-55.88" width="0.1524" layer="91"/>
 <junction x="71.12" y="-55.88"/>
 <junction x="78.74" y="-55.88"/>
+</segment>
+</net>
+<net name="N$2" class="0">
+<segment>
+<pinref part="R1" gate="G$1" pin="2"/>
+<pinref part="TFT" gate="-29" pin="S"/>
+<wire x1="17.78" y1="53.34" x2="25.4" y2="53.34" width="0.1524" layer="91"/>
+<junction x="17.78" y="53.34"/>
+<junction x="25.4" y="53.34"/>
 </segment>
 </net>
 </nets>
