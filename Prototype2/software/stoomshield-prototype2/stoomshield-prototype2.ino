@@ -26,7 +26,10 @@ volatile int errors_zeromis = 0;
 volatile int assert_repeatreads = 0;
 volatile int assert_zeropos = 0;
 volatile int pos = 0;
-int rpm = 0;
+
+unsigned int fps = 0;
+unsigned int fps_i = 0;
+unsigned long fps_timeold = millis();
 
 boolean s1, s2, s3, s3old;
 
@@ -128,15 +131,25 @@ int8_t read_encoder()
 void loop() {
   // This is the render loop
   
+  // Determine FPS.
+  fps_i++;
+  if (fps_i > 20) {
+    long now = millis();
+    fps = fps_i / ((now - fps_timeold) / 1000);
+    fps_i = 0;
+    fps_timeold = now;
+  }
+  
+  
   int y = 0;
   
-  // Show 
+  // Show frames rendered per second
   y+=16;
-  myGLCD.setColor(255, 255, 255);
+  if (fps > 10) { myGLCD.setColor(255, 255, 255); } else { myGLCD.setColor(255, 0, 0); }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("RPM", 0, y+4);
+  myGLCD.print("FPS", 0, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(rpm, 24, y, 10, '_');
+  myGLCD.printNumI(fps, 24, y, 4, '_');
   
   // Show grey code errors
   y+=16;
