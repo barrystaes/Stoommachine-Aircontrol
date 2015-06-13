@@ -28,12 +28,12 @@ volatile int assert_repeatreads = 0;
 volatile int assert_zeropos = 0;
 volatile int pos = 0;
 
-float fps = 0;
+unsigned int fps = 0;
 unsigned int fps_i = 0;
 unsigned long fps_timeold = millis();
 
-float rpm = 0;
-volatile int rpm_i = 0;
+unsigned int rpm = 0;
+volatile unsigned int rpm_i = 0;
 unsigned long rpm_timeold = millis();
 
 boolean s1, s2, s3, s3old;
@@ -142,7 +142,7 @@ void loop() {
   fps_i++;
   if (fps_i > 20) {
     long now = millis();
-    fps = (float) fps_i / ((now - fps_timeold) / 1000.0);
+    fps = (fps_i * 1000) / (now - fps_timeold);
     fps_i = 0;
     fps_timeold = now;
   }
@@ -150,7 +150,7 @@ void loop() {
   // Determine RPM.
   if ((rpm_i > 40) || (rpm_timeold+1000 < millis())) {
     long now2 = millis();
-    rpm = (float) (rpm_i / (float)rpm_wheelsteps) / ((now2 - rpm_timeold) / 60000.0);
+    rpm = (rpm_i * 60000) / (now2 - rpm_timeold) / rpm_wheelsteps;
     rpm_i = 0;
     rpm_timeold = now2;
   }
@@ -165,7 +165,7 @@ void loop() {
   myGLCD.setFont(SmallFont);
   myGLCD.print("FPS", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumF(fps, 2, x+24, y, ' ,', 4, '_');
+  myGLCD.printNumI(fps, x+24, y, 4, '_');
   
   // Show rotations per minute
   y+=16;
@@ -173,7 +173,7 @@ void loop() {
   myGLCD.setFont(SmallFont);
   myGLCD.print("RPM", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumF(rpm, 2, x+24, y, ' ,', 4, '_');
+  myGLCD.printNumI(rpm, x+24, y, 4, '_');
   
   // Show grey code errors
   y+=16;
