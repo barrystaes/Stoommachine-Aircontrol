@@ -54,7 +54,12 @@ void setup() {
   myGLCD.clrScr();
   myGLCD.setFont(BigFont);
   myGLCD.setColor(255, 255, 255);
-  myGLCD.print("StoomShield-proto2r0", CENTER, 0);
+  myGLCD.print("De Stoommachine", LEFT, 0);
+  myGLCD.setFont(SmallFont);
+  myGLCD.setColor(128, 128, 128);
+  myGLCD.print("proto2r0", RIGHT, 0);
+  myGLCD.drawLine(0,20,319,20);
+  
   
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
@@ -67,7 +72,7 @@ void timer_SensorRead() {
   // Position
   int delta = read_encoder();
   pos+=delta;
-  rpm_i+=delta;
+  if (delta!=0) { rpm_i++; }
   
   // Position reset
   s3 = digitalRead(pinSensor3);
@@ -204,7 +209,7 @@ void loop() {
   // Show zero position errors
   y+=16;
   if (errors_zeromis > 0) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
-  if (pos_expectzero == 0) { myGLCD.setColor(64, 64, 64); }
+  if (pos_expectzero == 0) { myGLCD.setColor(128, 128, 128); }
   myGLCD.setFont(SmallFont);
   myGLCD.print("ErZ", x, y+4);
   myGLCD.setFont(BigFont);
@@ -212,7 +217,7 @@ void loop() {
   
   // Show zero position success
   y+=16;
-  if (pos_expectzero == 0) { myGLCD.setColor(64, 64, 64); } else { myGLCD.setColor(255, 255, 255); }
+  if (pos_expectzero == 0) { myGLCD.setColor(128, 128, 128); } else { myGLCD.setColor(255, 255, 255); }
   myGLCD.setFont(SmallFont);
   myGLCD.print("OkZ", x, y+4);
   myGLCD.setFont(BigFont);
