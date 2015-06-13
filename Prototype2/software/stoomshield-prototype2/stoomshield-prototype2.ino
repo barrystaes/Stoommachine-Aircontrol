@@ -18,7 +18,8 @@ int pinSensor3 = 21; // 0-punt
 // Configure behavior
 const int SensorReadsPerSecond = 1000; // setting
 
-const int pos_expectzero = 0; //672;
+const int pos_expectzero = 0;  //672;
+const int rpm_wheelsteps = 80; //672;
 
 // Variables
 volatile int errors_greycode = 0;
@@ -27,9 +28,13 @@ volatile int assert_repeatreads = 0;
 volatile int assert_zeropos = 0;
 volatile int pos = 0;
 
-unsigned int fps = 0;
+float fps = 0;
 unsigned int fps_i = 0;
 unsigned long fps_timeold = millis();
+
+float rpm = 0;
+volatile int rpm_i = 0;
+unsigned long rpm_timeold = millis();
 
 boolean s1, s2, s3, s3old;
 
@@ -60,7 +65,9 @@ void timer_SensorRead() {
   s2 = digitalRead(pinSensor2);
   
   // Position
-  pos = pos + read_encoder();
+  int delta = read_encoder();
+  pos+=delta;
+  rpm_i+=delta;
   
   // Position reset
   s3 = digitalRead(pinSensor3);
@@ -135,37 +142,54 @@ void loop() {
   fps_i++;
   if (fps_i > 20) {
     long now = millis();
-    fps = fps_i / ((now - fps_timeold) / 1000);
+    fps = (float) fps_i / ((now - fps_timeold) / 1000.0);
     fps_i = 0;
     fps_timeold = now;
   }
   
+  // Determine RPM.
+  if ((rpm_i > 40) || (rpm_timeold+1000 < millis())) {
+    long now2 = millis();
+    rpm = (float) (rpm_i / (float)rpm_wheelsteps) / ((now2 - rpm_timeold) / 60000.0);
+    rpm_i = 0;
+    rpm_timeold = now2;
+  }
   
-  int y = 0;
+  
+  int y = 16;
+  int x = 16;
   
   // Show frames rendered per second
   y+=16;
   if (fps > 10) { myGLCD.setColor(255, 255, 255); } else { myGLCD.setColor(255, 0, 0); }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("FPS", 0, y+4);
+  myGLCD.print("FPS", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(fps, 24, y, 4, '_');
+  myGLCD.printNumF(fps, 2, x+24, y, ' ,', 4, '_');
+  
+  // Show rotations per minute
+  y+=16;
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("RPM", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumF(rpm, 2, x+24, y, ' ,', 4, '_');
   
   // Show grey code errors
   y+=16;
   if (errors_greycode > 10) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("ErG", 0, y+4);
+  myGLCD.print("ErG", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(errors_greycode, 24, y, 5, '_');
+  myGLCD.printNumI(errors_greycode, x+24, y, 5, '_');
   
   // Show machine position
   y+=16;
   myGLCD.setColor(255, 255, 255);
   myGLCD.setFont(SmallFont);
-  myGLCD.print("POS", 0, y+4);
+  myGLCD.print("POS", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(pos, 24, y, 5, '_');
+  myGLCD.printNumI(pos, x+24, y, 5, '_');
   
   // Show recurring measurements (i expect 8 or more)
   y+=16;
@@ -173,26 +197,26 @@ void loop() {
     if (assert_repeatreads < 8) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
   }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("OkR", 0, y+4);
+  myGLCD.print("OkR", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(assert_repeatreads, 24, y, 5, '_');
+  myGLCD.printNumI(assert_repeatreads, x+24, y, 5, '_');
     
   // Show zero position errors
   y+=16;
   if (errors_zeromis > 0) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
   if (pos_expectzero == 0) { myGLCD.setColor(64, 64, 64); }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("ErZ", 0, y+4);
+  myGLCD.print("ErZ", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(errors_zeromis, 24, y, 5, '_');
+  myGLCD.printNumI(errors_zeromis, x+24, y, 5, '_');
   
   // Show zero position success
   y+=16;
   if (pos_expectzero == 0) { myGLCD.setColor(64, 64, 64); } else { myGLCD.setColor(255, 255, 255); }
   myGLCD.setFont(SmallFont);
-  myGLCD.print("OkZ", 0, y+4);
+  myGLCD.print("OkZ", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(assert_zeropos, 24, y, 5, '_');
+  myGLCD.printNumI(assert_zeropos, x+24, y, 5, '_');
   
   
   // Show raw sensor state
