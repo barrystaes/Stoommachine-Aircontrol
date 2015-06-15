@@ -11,15 +11,15 @@ extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
 // Configure wiring
-int pinSensor1 = 19; // A
-int pinSensor2 = 20; // B
-int pinSensor3 = 21; // 0-punt
+int pinSensor1 = 19; //78; // A
+int pinSensor2 = 20; //79; // B
+int pinSensor3 = 21; //80; // 0-punt
 
 // Configure behavior
 const int SensorReadsPerSecond = 1000; // setting
 
-const int pos_expectzero = 0;  //672;
-const int rpm_wheelsteps = 80; //672;
+const int pos_expectzero = 672;
+const int rpm_wheelsteps = 672;
 
 // Variables
 volatile int errors_greycode = 0;
