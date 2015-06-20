@@ -11,9 +11,9 @@ extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
 // Configure wiring
-int pinSensor1 = 19; //78; // A
-int pinSensor2 = 20; //79; // B
-int pinSensor3 = 21; //80; // 0-punt
+int pinSensor1 = 51; //19; //78; // A
+int pinSensor2 = 49; //20; //79; // B
+int pinSensor3 = 47; //21; //80; // 0-punt
 
 // Configure behavior
 const int SensorReadsPerSecond = 1000; // setting
@@ -101,7 +101,7 @@ int8_t read_encoder()
   /* ^ Note:
    * 16 items; their index is two 2 bits "grey codes", and the value the corresponding delta:
    *     
-   * index  new  old  delta
+   * index  old  new  delta
    *        A B  A B  
    *     0  0 0  0 0   0
    *     1  0 0  0 1  -1
@@ -121,7 +121,6 @@ int8_t read_encoder()
    *    15  1 1  1 1   0
    *
    * (err) These cases actually indicate a measurement error:  allows only one bit to change at a time.
-   * Most zeros actually indicate a measurement error.
    */
   static uint8_t old_AB = 0;
   static uint8_t repeatread = 0;
