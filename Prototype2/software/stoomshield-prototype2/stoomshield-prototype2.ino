@@ -14,6 +14,11 @@ extern uint8_t BigFont[];
 int pinSensor1 = 51; //19; //78; // A
 int pinSensor2 = 49; //20; //79; // B
 int pinSensor3 = 47; //21; //80; // 0-punt
+//#define ENC1_PORT PINC; // in Arduino Due, use PIOC->PIO_PDSR for reading instead.
+#define ENC1_PORT_SENSORA 1<<12 // PC12 in variant.cpp
+#define ENC1_PORT_SENSORB 1<<14 // PC14 in variant.cpp
+#define ENC1_PORT_SENSOR0 1<<16 // PC16 in variant.cpp
+uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
 // Configure behavior
 const int SensorReadsPerSecond = 1000; // setting
@@ -66,16 +71,19 @@ void setup() {
 }
 
 void timer_SensorRead() {
-  s1 = digitalRead(pinSensor1);
-  s2 = digitalRead(pinSensor2);
+  uint32_t pc = PIOC->PIO_PDSR & ENC1_PINS;
+  
+  s1 = (pc & ENC1_PORT_SENSORA) != 0;
+  s2 = (pc & ENC1_PORT_SENSORB) != 0;
+  s3 = (pc & ENC1_PORT_SENSOR0) != 0;
   
   // Position
-  int delta = read_encoder();
+  uint8_t ab = (s1<<1) | s2;
+  int delta = read_encoder(ab);
   pos+=delta;
   if (delta!=0) { rpm_i++; }
   
   // Position reset
-  s3 = digitalRead(pinSensor3);
   if (s3!=s3old) {  // only do this once, 
     if (!s3) {      //  and only when going high
       if (pos_expectzero != 0) { // feature enabled?
@@ -95,7 +103,7 @@ void timer_SensorRead() {
 }
 
 /* returns change in encoder state (-1,0,1) */
-int8_t read_encoder()
+int8_t read_encoder(uint8_t ab)
 {
   int8_t enc_states[] = {0,-1,1,0,1,0,0,-1,-1,0,0,1,0,1,-1,0};
   /* ^ Note:
@@ -126,7 +134,7 @@ int8_t read_encoder()
   static uint8_t repeatread = 0;
 
   old_AB <<= 2;                   // remember previous state
-  old_AB |= ( (s1 << 1) | s2 );  // add current state
+  old_AB |= ab; //( (s1 << 1) | s2 );  // add current state
   // ^ old_AB |= ( ENC_PORT & 0x03 );  // example of how to read a port directly
   
   int index = ( old_AB & 0x0f );
