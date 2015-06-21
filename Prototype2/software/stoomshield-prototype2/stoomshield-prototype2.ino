@@ -55,15 +55,15 @@ void setup() {
   // Setup display
   
   // Draw backdrop
-  myGLCD.InitLCD();
+  myGLCD.InitLCD(PORTRAIT);
   myGLCD.clrScr();
   myGLCD.setFont(BigFont);
   myGLCD.setColor(255, 255, 255);
   myGLCD.print("De Stoommachine", LEFT, 0);
-  myGLCD.setFont(SmallFont);
-  myGLCD.setColor(128, 128, 128);
-  myGLCD.print("proto2r0", RIGHT, 0);
-  myGLCD.drawLine(0,20,319,20);
+//  myGLCD.setFont(SmallFont);
+//  myGLCD.setColor(128, 128, 128);
+//  myGLCD.print("proto2r0", RIGHT, 0);
+  myGLCD.drawLine(0,20,239,20);
   
   
   // Sensor timer
@@ -234,9 +234,9 @@ void loop() {
   // Show raw sensor state
   myGLCD.setColor(255, 255, 255);
   myGLCD.setFont(SmallFont);
-  myGLCD.print(s1 ? "SENSOR1" : "       ", 220, 32);
-  myGLCD.print(s2 ? "SENSOR2" : "       ", 220, 48);
-  myGLCD.print(s3 ? "SENSOR3" : "       ", 220, 64);
+  myGLCD.print(s1 ? "SENSOR1" : "       ", 160, 32);
+  myGLCD.print(s2 ? "SENSOR2" : "       ", 160, 48);
+  myGLCD.print(s3 ? "SENSOR3" : "       ", 160, 64);
   
   // TODO render display
 
