@@ -21,7 +21,7 @@ int pinSensor3 = 47; //21; //80; // 0-punt
 uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
 // Configure behavior
-const int SensorReadsPerSecond = 1000; // setting
+const int SensorReadsPerSecond = 50000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
@@ -32,6 +32,7 @@ volatile int errors_zeromis = 0;
 volatile int assert_repeatreads = 0;
 volatile int assert_zeropos = 0;
 volatile int pos = 0;
+volatile unsigned int measurements = 0;
 
 unsigned int fps = 0;
 unsigned int fps_i = 0;
@@ -40,6 +41,10 @@ unsigned long fps_timeold = millis();
 unsigned int rpm = 0;
 volatile unsigned int rpm_i = 0;
 unsigned long rpm_timeold = millis();
+
+unsigned int mps = 0;
+volatile unsigned int mps_i = 0;
+unsigned long mps_timeold = millis();
 
 boolean s1, s2, s3, s3old;
 
@@ -70,7 +75,7 @@ void setup() {
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
 }
 
-void timer_SensorRead() {
+void timer_SensorRead() {  
   uint32_t pc = PIOC->PIO_PDSR & ENC1_PINS;
   
   s1 = (pc & ENC1_PORT_SENSORA) != 0;
@@ -100,6 +105,9 @@ void timer_SensorRead() {
     } 
     s3old = s3;
   }
+  
+  measurements++;
+  mps_i++;
 }
 
 /* returns change in encoder state (-1,0,1) */
@@ -167,6 +175,14 @@ void loop() {
     rpm_timeold = now2;
   }
   
+  // Determine MPS
+  if (mps_i > 20) {
+    long now = millis();
+    mps = (mps_i * 1000) / (now - mps_timeold);
+    mps_i = 0;
+    mps_timeold = now;
+  }
+  
   
   int y = 16;
   int x = 16;
@@ -178,6 +194,14 @@ void loop() {
   myGLCD.print("FPS", x, y+4);
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(fps, x+24, y, 4, '_');
+    
+  // Show measurements per second
+  y+=16;
+  if (mps >= (SensorReadsPerSecond * 0.95)) { myGLCD.setColor(255, 255, 255); } else { myGLCD.setColor(255, 0, 0); }
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("MPS", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumI(mps, x+24, y, 6, '_');
   
   // Show rotations per minute
   y+=16;
@@ -228,7 +252,15 @@ void loop() {
   myGLCD.setFont(SmallFont);
   myGLCD.print("OkZ", x, y+4);
   myGLCD.setFont(BigFont);
-  myGLCD.printNumI(assert_zeropos, x+24, y, 5, '_');
+  myGLCD.printNumI(assert_zeropos, x+24, y, 5, '_');  
+  
+  // Show measurements counter
+  y+=16;
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("Mes", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumI(measurements, x+24, y);
   
   
   // Show raw sensor state
