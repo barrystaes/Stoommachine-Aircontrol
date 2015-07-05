@@ -22,6 +22,7 @@ class RevLog
     void Clear();
     void Log(int pos, int rpm, int okr, int an1, int an2);
     void Render(UTFT myGLCD);
+    void RenderBackdrop(UTFT myGLCD);
   private:
     // Data
     boolean log_inv[REVLOG_SIZE]; // Invalidated, should rerender.
@@ -29,6 +30,17 @@ class RevLog
     int log_okr[REVLOG_SIZE]; // subsequent readings on this position (higher is better)
     int log_an1[REVLOG_SIZE]; // analog sensor (pot)
     int log_an2[REVLOG_SIZE]; // analog sensor (pressure transmitter)
+    
+    // Appearance
+    int border;
+    
+    int rendery_rpm_min;
+    int rendery_rpm_max;
+    int rendery_rpm_delta;
+  
+    int rendery_an1_min;
+    int rendery_an1_max;
+    int rendery_an1_delta;
     
     void RenderSlice(UTFT myGLCD, int UTFTcolor, int X, int value, int minY, int maxY);
 };

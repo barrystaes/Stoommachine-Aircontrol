@@ -15,11 +15,22 @@ RevLog::RevLog()
 void RevLog::Init()
 {
   Clear();
+  
+  // Appearance
+  border=1; // for border
+  
+  rendery_rpm_min = 210;
+  rendery_rpm_max = 240;
+  rendery_rpm_delta = rendery_rpm_max - rendery_rpm_min;
+  
+  rendery_an1_min = 241;
+  rendery_an1_max = 311;
+  rendery_an1_delta = rendery_an1_max - rendery_an1_min;
 }
 
 void RevLog::Clear()
 {
-  for (int i=0; i<=REVLOG_SIZE; i++) {
+  for (int i=0; i<REVLOG_SIZE; i++) {
     log_inv[i] = true;
     log_rpm[i] = 0;
     log_okr[i] = 0;
@@ -49,14 +60,23 @@ void RevLog::Log(int pos, int rpm, int okr, int an1, int an2)
 
 void RevLog::Render(UTFT myGLCD)
 {
-  for (int i=0; i<=REVLOG_SIZE; i++) {
+  for (int i=0; i<REVLOG_SIZE; i++) {
     // Is this log position invalidated? (changed by Log function)
     if (log_inv[i]) {
       log_inv[i] = false; // Resets invalidate.
       
-      RenderSlice(myGLCD, VGA_YELLOW, i, (log_an1[i] * 90) / 1024, 220, 310);
+      RenderSlice(myGLCD, VGA_PURPLE, i + border, 30 - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
+      RenderSlice(myGLCD, VGA_YELLOW, i + border,       (log_an1[i] * rendery_an1_delta) / 1024 , rendery_an1_min, rendery_an1_max);
     }
   }
+}
+
+void RevLog::RenderBackdrop(UTFT myGLCD) {
+  myGLCD.setColor(VGA_GRAY);
+  myGLCD.drawRect(0, rendery_rpm_min - border, 170, rendery_rpm_max + border);
+  myGLCD.drawRect(0, rendery_an1_min - border, 170, rendery_an1_max + border);
+  myGLCD.print("RPM", 174, rendery_rpm_min);
+  myGLCD.print("an1", 174, rendery_an1_min);
 }
 
 /*********************************************************************/

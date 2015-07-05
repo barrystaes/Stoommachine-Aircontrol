@@ -41,7 +41,7 @@ unsigned int fps = 0;
 unsigned int fps_i = 0;
 unsigned long fps_timeold = millis();
 
-unsigned int rpm = 0;
+volatile unsigned int rpm = 0;
 volatile unsigned int rpm_i = 0;
 unsigned long rpm_timeold = millis();
 
@@ -79,8 +79,10 @@ void setup() {
 //  myGLCD.setColor(128, 128, 128);
 //  myGLCD.print("proto2r0", RIGHT, 0);
   myGLCD.drawLine(0,20,239,20);
+  myGLCD.setFont(BigFont);
   
   myRevLog.Init();
+  myRevLog.RenderBackdrop(myGLCD);
   
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
@@ -121,7 +123,8 @@ void timer_SensorRead() {
   // can only do this 10000 times/second, and digitalWrite() is known to interfere with this.
   analog1 = analogRead(pinAnalog1);
     
-  myRevLog.Log(pos / REVLOG_DIVIDER, 0, assert_repeatreads, analog1, 0);
+  updateRPM();
+  myRevLog.Log(pos / REVLOG_DIVIDER, rpm, assert_repeatreads, analog1, 0);
   
   measurements++;
   mps_i++;
@@ -182,15 +185,7 @@ void loop() {
     fps = (fps_i * 1000) / (now - fps_timeold);
     fps_i = 0;
     fps_timeold = now;
-  }
-  
-  // Determine RPM.
-  if ((rpm_i > 40) || (rpm_timeold+1000 < millis())) {
-    long now2 = millis();
-    rpm = (rpm_i * 60000) / (now2 - rpm_timeold) / rpm_wheelsteps;
-    rpm_i = 0;
-    rpm_timeold = now2;
-  }
+  } 
   
   // Determine MPS
   if (mps_i > 20) {
@@ -274,7 +269,7 @@ void loop() {
   // Show measurements counter
   y+=16;
   myGLCD.setColor(255, 255, 255);
-  myGLCD.setFont(SmallFont);
+  myGLCD.setFont(SmallFont); 
   myGLCD.print("Mes", x, y+4);
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(measurements, x+24, y);
@@ -299,4 +294,14 @@ void loop() {
   myRevLog.Render(myGLCD);
   
   delay(10);
+}
+
+int updateRPM() {
+  // Determine RPM.
+  if ((rpm_i > 40) || (rpm_timeold+1000 < millis())) {
+    long now2 = millis();
+    rpm = (rpm_i * 60000) / (now2 - rpm_timeold) / rpm_wheelsteps;
+    rpm_i = 0;
+    rpm_timeold = now2;
+  }
 }
