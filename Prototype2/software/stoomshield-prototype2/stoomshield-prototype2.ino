@@ -7,6 +7,7 @@
 // Includes
 #include <DueTimer.h>
 #include <UTFT.h>
+#include "RevLog.h"
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
@@ -55,6 +56,9 @@ volatile int analog1 = 0;
 
 UTFT myGLCD(SSD1289,40,41,38,39);
 
+RevLog myRevLog;
+
+
 void setup() {
   // Sensor wiring
   pinMode(pinSensor1, INPUT_PULLUP);
@@ -76,6 +80,7 @@ void setup() {
 //  myGLCD.print("proto2r0", RIGHT, 0);
   myGLCD.drawLine(0,20,239,20);
   
+  myRevLog.Init();
   
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
@@ -115,6 +120,8 @@ void timer_SensorRead() {
   
   // can only do this 10000 times/second, and digitalWrite() is known to interfere with this.
   analog1 = analogRead(pinAnalog1);
+    
+  myRevLog.Log(pos / REVLOG_DIVIDER, 0, assert_repeatreads, analog1, 0);
   
   measurements++;
   mps_i++;
@@ -289,6 +296,7 @@ void loop() {
   myGLCD.print(s3 ? "SENSOR3" : "       ", 160, 64);
   
   // TODO render display
-
+  myRevLog.Render(myGLCD);
+  
   delay(10);
 }
