@@ -24,7 +24,7 @@ uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 int pinAnalog1 = A0;
 
 // Configure behavior
-const int SensorReadsPerSecond = 1000; // setting
+const int SensorReadsPerSecond = 10000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
@@ -41,7 +41,7 @@ unsigned int fps = 0;
 unsigned int fps_i = 0;
 unsigned long fps_timeold = millis();
 
-volatile unsigned int rpm = 0;
+volatile float rpm = 0;
 volatile unsigned int rpm_i = 0;
 unsigned long rpm_timeold = millis();
 
@@ -79,7 +79,7 @@ void setup() {
 //  myGLCD.setColor(128, 128, 128);
 //  myGLCD.print("proto2r0", RIGHT, 0);
   myGLCD.drawLine(0,20,239,20);
-  myGLCD.setFont(BigFont);
+  myGLCD.setFont(SmallFont);
   
   myRevLog.Init();
   myRevLog.RenderBackdrop(myGLCD);
@@ -274,6 +274,7 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(measurements, x+24, y);
   
+  /*
   // Show analog measurement
   y+=16;
   myGLCD.setColor(255, 255, 255);
@@ -281,6 +282,7 @@ void loop() {
   myGLCD.print("an1", x, y+4);
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(analog1, x+24, y, 9, ' _');
+  */
   
   
   // Show raw sensor state
@@ -292,6 +294,8 @@ void loop() {
   
   // TODO render display
   myRevLog.Render(myGLCD);
+  myGLCD.setFont(BigFont);
+  myRevLog.RenderValues(myGLCD, rpm, analog1, 0);
   
   delay(10);
 }

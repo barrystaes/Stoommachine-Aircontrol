@@ -23,6 +23,7 @@ class RevLog
     void Log(int pos, int rpm, int okr, int an1, int an2);
     void Render(UTFT myGLCD);
     void RenderBackdrop(UTFT myGLCD);
+    void RenderValues(UTFT myGLCD, int rpm, int an1, int an2);
   private:
     // Data
     boolean log_inv[REVLOG_SIZE]; // Invalidated, should rerender.

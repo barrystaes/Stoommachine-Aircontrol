@@ -65,8 +65,8 @@ void RevLog::Render(UTFT myGLCD)
     if (log_inv[i]) {
       log_inv[i] = false; // Resets invalidate.
       
-      RenderSlice(myGLCD, VGA_PURPLE, i + border, 30 - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
-      RenderSlice(myGLCD, VGA_YELLOW, i + border,       (log_an1[i] * rendery_an1_delta) / 1024 , rendery_an1_min, rendery_an1_max);
+      RenderSlice(myGLCD, VGA_PURPLE, i + border, rendery_rpm_delta - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
+      RenderSlice(myGLCD, VGA_YELLOW, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_an1_min, rendery_an1_max);
     }
   }
 }
@@ -75,8 +75,14 @@ void RevLog::RenderBackdrop(UTFT myGLCD) {
   myGLCD.setColor(VGA_GRAY);
   myGLCD.drawRect(0, rendery_rpm_min - border, 170, rendery_rpm_max + border);
   myGLCD.drawRect(0, rendery_an1_min - border, 170, rendery_an1_max + border);
-  myGLCD.print("RPM", 174, rendery_rpm_min);
-  myGLCD.print("an1", 174, rendery_an1_min);
+  myGLCD.print("RPM:", 174, rendery_rpm_min);
+  myGLCD.print("Druk A:", 174, rendery_an1_min);
+}
+
+void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2) {
+  myGLCD.setColor(VGA_WHITE);
+  myGLCD.printNumI(rpm, RIGHT, rendery_rpm_min+12, 4, ' ');
+  myGLCD.printNumI(an1, RIGHT, rendery_an1_min+12, 4, ' ');
 }
 
 /*********************************************************************/
