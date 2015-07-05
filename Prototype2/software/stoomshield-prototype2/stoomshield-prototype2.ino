@@ -20,8 +20,10 @@ int pinSensor3 = 47; //21; //80; // 0-punt
 #define ENC1_PORT_SENSOR0 1<<16 // PC16 in variant.cpp
 uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
+int pinAnalog1 = A0;
+
 // Configure behavior
-const int SensorReadsPerSecond = 50000; // setting
+const int SensorReadsPerSecond = 1000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
@@ -48,6 +50,8 @@ unsigned long mps_timeold = millis();
 
 boolean s1, s2, s3, s3old;
 
+volatile int analog1 = 0;
+
 
 UTFT myGLCD(SSD1289,40,41,38,39);
 
@@ -56,6 +60,8 @@ void setup() {
   pinMode(pinSensor1, INPUT_PULLUP);
   pinMode(pinSensor2, INPUT_PULLUP);
   pinMode(pinSensor3, INPUT_PULLUP);
+  
+  pinMode(pinAnalog1, INPUT);
   
   // Setup display
   
@@ -105,6 +111,10 @@ void timer_SensorRead() {
     } 
     s3old = s3;
   }
+  
+  
+  // can only do this 10000 times/second, and digitalWrite() is known to interfere with this.
+  analog1 = analogRead(pinAnalog1);
   
   measurements++;
   mps_i++;
@@ -261,6 +271,14 @@ void loop() {
   myGLCD.print("Mes", x, y+4);
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(measurements, x+24, y);
+  
+  // Show analog measurement
+  y+=16;
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("an1", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumI(analog1, x+24, y, 9, ' _');
   
   
   // Show raw sensor state
