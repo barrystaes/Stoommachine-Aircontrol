@@ -23,8 +23,8 @@ uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
 int pinAnalog1 = A0;
 
-int pinValveAin = 2;
-int pinValveAout= 3;
+int pinValveAin = 8;
+int pinValveAout= 9;
 
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
