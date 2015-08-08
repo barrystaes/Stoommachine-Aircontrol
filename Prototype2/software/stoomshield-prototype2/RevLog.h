@@ -34,16 +34,20 @@ class RevLog
     
     // Appearance
     int border;
+    int renderrow_bgcolor1;
+    int renderrow_bgcolor2;
     
+    int rendery_rpm_color;
     int rendery_rpm_min;
     int rendery_rpm_max;
     int rendery_rpm_delta;
   
+    int rendery_an1_color;
     int rendery_an1_min;
     int rendery_an1_max;
     int rendery_an1_delta;
     
-    void RenderSlice(UTFT myGLCD, int UTFTcolor, int X, int value, int minY, int maxY);
+    void RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, int value, int minY, int maxY);
 };
 
 #endif

@@ -19,10 +19,15 @@ void RevLog::Init()
   // Appearance
   border=1; // for border
   
+  renderrow_bgcolor1 = VGA_BLACK;
+  renderrow_bgcolor2 = VGA_RED;
+  
+  rendery_rpm_color = VGA_PURPLE;
   rendery_rpm_min = 210;
   rendery_rpm_max = 240;
   rendery_rpm_delta = rendery_rpm_max - rendery_rpm_min;
   
+  rendery_an1_color = VGA_YELLOW;
   rendery_an1_min = 241;
   rendery_an1_max = 311;
   rendery_an1_delta = rendery_an1_max - rendery_an1_min;
@@ -65,8 +70,8 @@ void RevLog::Render(UTFT myGLCD)
     if (log_inv[i]) {
       log_inv[i] = false; // Resets invalidate.
       
-      RenderSlice(myGLCD, VGA_PURPLE, i + border, rendery_rpm_delta - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
-      RenderSlice(myGLCD, VGA_YELLOW, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_an1_min, rendery_an1_max);
+      RenderSlice(myGLCD, renderrow_bgcolor1, rendery_rpm_color, i + border, rendery_rpm_delta - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
+      RenderSlice(myGLCD, renderrow_bgcolor2, rendery_an1_color, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_an1_min, rendery_an1_max);
     }
   }
 }
@@ -87,7 +92,7 @@ void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2) {
 
 /*********************************************************************/
 
-void RevLog::RenderSlice(UTFT myGLCD, int UTFTcolor, int X, int value, int minY, int maxY)
+void RevLog::RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, int value, int minY, int maxY)
 {
   int valueY = value; // TODO add scale factor
   
@@ -101,7 +106,7 @@ void RevLog::RenderSlice(UTFT myGLCD, int UTFTcolor, int X, int value, int minY,
     //Serial.print('LogBugNominate; RevLog.RenderSlice() value out of bounds: (0<<',valueY,'<<',rangeY,')');
   }
   
-  myGLCD.setColor(VGA_BLACK);
+  myGLCD.setColor(UTFTbgcolor);
   myGLCD.drawLine(X, minY, X, maxY);
   myGLCD.setColor(UTFTcolor);
   myGLCD.drawPixel(X, minY + valueY); // TODO draw line of value1 .. value2
