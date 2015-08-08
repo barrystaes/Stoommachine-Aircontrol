@@ -23,11 +23,21 @@ uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
 int pinAnalog1 = A0;
 
+int pinValveAin = 2;
+int pinValveAout= 3;
+
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
+
+// Valve timings
+
+int pinValveAin_posStart = 100;
+int pinValveAin_posStop = 200;
+int pinValveAout_posStart = 300;
+int pinValveAout_posStop = 400;
 
 // Variables
 volatile int errors_greycode = 0;
@@ -53,6 +63,8 @@ boolean s1, s2, s3, s3old;
 
 volatile int analog1 = 0;
 
+bool outputValveAin = false;
+bool outputValveAout = false;
 
 UTFT myGLCD(SSD1289,40,41,38,39);
 
@@ -66,6 +78,9 @@ void setup() {
   pinMode(pinSensor3, INPUT_PULLUP);
   
   pinMode(pinAnalog1, INPUT);
+  
+  pinMode(pinValveAin, OUTPUT);
+  pinMode(pinValveAout, OUTPUT);
   
   // Setup display
   
@@ -122,8 +137,12 @@ void timer_SensorRead() {
   
   // can only do this 10000 times/second, and digitalWrite() is known to interfere with this.
   analog1 = analogRead(pinAnalog1);
-    
+   
+  // determine other values
   updateRPM();
+  // set the outputs, which control the air valves
+  setOutputs();
+  // log values for this position.
   myRevLog.Log(pos / REVLOG_DIVIDER, rpm, assert_repeatreads, analog1, 0);
   
   measurements++;
@@ -175,6 +194,24 @@ int8_t read_encoder(uint8_t ab)
   }
 }
 
+void setOutputs() {
+  outputValveAin  = inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
+  outputValveAout = inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
+  
+  digitalWrite(pinValveAin,  outputValveAin);
+  digitalWrite(pinValveAout, outputValveAout);
+}
+
+bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
+  if (posStop > posStart) {
+    return (posAssert > posStart) && (posAssert < posStop);
+  } else if (posStop < posStart) {
+    return (posAssert > posStart) || (posAssert < posStop); // TODO test
+  } else {
+    return posAssert == posStart;
+  }
+}
+
 void loop() {
   // This is the render loop
   
@@ -215,13 +252,13 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(mps, x+24, y, 6, '_');
   
-  // Show rotations per minute
-  y+=16;
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.setFont(SmallFont);
-  myGLCD.print("RPM", x, y+4);
-  myGLCD.setFont(BigFont);
-  myGLCD.printNumI(rpm, x+24, y, 4, '_');
+//  // Show rotations per minute
+//  y+=16;
+//  myGLCD.setColor(255, 255, 255);
+//  myGLCD.setFont(SmallFont);
+//  myGLCD.print("RPM", x, y+4);
+//  myGLCD.setFont(BigFont);
+//  myGLCD.printNumI(rpm, x+24, y, 4, '_');
   
   // Show grey code errors
   y+=16;
@@ -231,18 +268,18 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(errors_greycode, x+24, y, 5, '_');
   
-  // Show machine position
-  y+=16;
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.setFont(SmallFont);
-  myGLCD.print("POS", x, y+4);
-  myGLCD.setFont(BigFont);
-  myGLCD.printNumI(pos, x+24, y, 5, '_');
+//  // Show machine position
+//  y+=16;
+//  myGLCD.setColor(255, 255, 255);
+//  myGLCD.setFont(SmallFont);
+//  myGLCD.print("POS", x, y+4);
+//  myGLCD.setFont(BigFont);
+//  myGLCD.printNumI(pos, x+24, y, 5, '_');
   
-  // Show recurring measurements (i expect 8 or more)
+  // Show recurring measurements (i expect 20 or more)
   y+=16;
   if (assert_repeatreads == 0) { myGLCD.setColor(255, 255, 255); } else {
-    if (assert_repeatreads < 8) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
+    if (assert_repeatreads < 20) { myGLCD.setColor(255, 0, 0); } else { myGLCD.setColor(0, 255, 0); }
   }
   myGLCD.setFont(SmallFont);
   myGLCD.print("OkR", x, y+4);
@@ -291,6 +328,9 @@ void loop() {
   myGLCD.print(s1 ? "SENSOR1" : "       ", 160, 32);
   myGLCD.print(s2 ? "SENSOR2" : "       ", 160, 48);
   myGLCD.print(s3 ? "SENSOR3" : "       ", 160, 64);
+  
+  myGLCD.print(outputValveAin  ? "ValveAin " : "         ", 160, 96);
+  myGLCD.print(outputValveAout ? "ValveAout" : "         ", 160,112);
   
   // TODO render display
   myRevLog.Render(myGLCD);
