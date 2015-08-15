@@ -143,7 +143,13 @@ void timer_SensorRead() {
   // set the outputs, which control the air valves
   setOutputs();
   // log values for this position.
-  myRevLog.Log(pos / REVLOG_DIVIDER, rpm, assert_repeatreads, analog1, 0);
+  myRevLog.Log(
+    pos / REVLOG_DIVIDER,
+    rpm,
+    assert_repeatreads,
+    analog1,
+    0
+  );
   
   measurements++;
   mps_i++;
@@ -201,7 +207,6 @@ void setOutputs() {
   
   digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
   digitalWrite(pinValveAout, !outputValveAout);
-  digitalWrite(pinValveAout, outputValveAout);
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
@@ -270,13 +275,13 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(errors_greycode, x+24, y, 5, '_');
   
-//  // Show machine position
-//  y+=16;
-//  myGLCD.setColor(255, 255, 255);
-//  myGLCD.setFont(SmallFont);
-//  myGLCD.print("POS", x, y+4);
-//  myGLCD.setFont(BigFont);
-//  myGLCD.printNumI(pos, x+24, y, 5, '_');
+  // Show machine position
+  y+=16;
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("POS", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumI(pos, x+24, y, 5, '_');
   
   // Show recurring measurements (i expect 20 or more)
   y+=16;
