@@ -148,7 +148,9 @@ void timer_SensorRead() {
     rpm,
     assert_repeatreads,
     analog1,
-    0
+    0,
+    outputValveAin,
+    outputValveAout
   );
   
   measurements++;
@@ -342,7 +344,7 @@ void loop() {
   // TODO render display
   myRevLog.Render(myGLCD);
   myGLCD.setFont(BigFont);
-  myRevLog.RenderValues(myGLCD, rpm, analog1, 0);
+  myRevLog.RenderValues(myGLCD, rpm, analog1, 0, outputValveAin, outputValveAout);
   
   delay(10);
 }
