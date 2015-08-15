@@ -21,7 +21,7 @@ int pinSensor3 = 47; //21; //80; // 0-punt
 #define ENC1_PORT_SENSOR0 1<<16 // PC16 in variant.cpp
 uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
-int pinAnalog1 = A0;
+int pinAnalog1 = A2; // A0
 
 int pinValveAin = 8;
 int pinValveAout= 9;
@@ -198,7 +198,9 @@ void setOutputs() {
   outputValveAin  = inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
   outputValveAout = inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
   
-  digitalWrite(pinValveAin,  outputValveAin);
+  
+  digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
+  digitalWrite(pinValveAout, !outputValveAout);
   digitalWrite(pinValveAout, outputValveAout);
 }
 
