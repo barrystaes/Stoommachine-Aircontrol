@@ -22,6 +22,16 @@ void RevLog::Init()
   renderrow_bgcolor1 = VGA_BLACK;
   renderrow_bgcolor2 = VGA_RED;
   
+  
+  
+  rendery_vAi_color = VGA_GREEN;
+  rendery_vAi_min = 181;
+  rendery_vAi_max = 190;
+  
+  rendery_vAi_color = VGA_RED;
+  rendery_vAi_min = 191;
+  rendery_vAi_max = 200;
+  
   rendery_rpm_color = VGA_PURPLE;
   rendery_rpm_min = 210;
   rendery_rpm_max = 240;
@@ -41,10 +51,12 @@ void RevLog::Clear()
     log_okr[i] = 0;
     log_an1[i] = 0;
     log_an2[i] = 0;
+    log_vAi[i] = false;
+    log_vAi[i] = false;
   }
 }
 
-void RevLog::Log(int pos, int rpm, int okr, int an1, int an2)
+void RevLog::Log(int pos, int rpm, int okr, int an1, int an2, bool relay1, bool relay2)
 {
   // Out of bounds?
   if ((pos < 0) || (pos >= REVLOG_SIZE)) {
@@ -61,6 +73,8 @@ void RevLog::Log(int pos, int rpm, int okr, int an1, int an2)
   log_okr[pos] = okr;
   log_an1[pos] = an1;
   log_an2[pos] = an2;
+  log_vAi[pos] = relay1;
+  log_vAo[pos] = relay2;
 }
 
 void RevLog::Render(UTFT myGLCD)
@@ -70,8 +84,11 @@ void RevLog::Render(UTFT myGLCD)
     if (log_inv[i]) {
       log_inv[i] = false; // Resets invalidate.
       
+      
       RenderSlice(myGLCD, renderrow_bgcolor1, rendery_rpm_color, i + border, rendery_rpm_delta - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
       RenderSlice(myGLCD, renderrow_bgcolor2, rendery_an1_color, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_an1_min, rendery_an1_max);
+      RenderSlice(myGLCD, renderrow_bgcolor2, rendery_vAi_color, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_vAi_min, rendery_vAi_max);
+      RenderSlice(myGLCD, renderrow_bgcolor2, rendery_vAo_color, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_vAo_min, rendery_vAo_max);
     }
   }
 }
@@ -84,7 +101,7 @@ void RevLog::RenderBackdrop(UTFT myGLCD) {
   myGLCD.print("Druk A:", 174, rendery_an1_min);
 }
 
-void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2) {
+void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2, bool relay1, bool relay2) {
   myGLCD.setColor(VGA_WHITE);
   myGLCD.printNumI(rpm, RIGHT, rendery_rpm_min+12, 4, ' ');
   myGLCD.printNumI(an1, RIGHT, rendery_an1_min+12, 4, ' ');
