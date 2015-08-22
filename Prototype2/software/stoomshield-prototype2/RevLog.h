@@ -20,6 +20,7 @@ class RevLog
     RevLog();
     void Init();
     void Clear();
+    word UTFColor(byte r, byte g, byte b);
     void Log(int pos, int rpm, int okr, int an1, int an2, bool relay1, bool relay2);
     void Render(UTFT myGLCD);
     void RenderBackdrop(UTFT myGLCD);
@@ -52,12 +53,15 @@ class RevLog
     int rendery_vAi_color;
     int rendery_vAi_min;
     int rendery_vAi_max;
+    int rendery_vAi_delta;
     
     int rendery_vAo_color;
     int rendery_vAo_min;
     int rendery_vAo_max;
+    int rendery_vAo_delta;
     
     void RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, int value, int minY, int maxY);
+    void RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, boolean value, int minY, int maxY);
 };
 
 #endif

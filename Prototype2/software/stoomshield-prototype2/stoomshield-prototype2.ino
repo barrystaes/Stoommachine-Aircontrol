@@ -312,6 +312,7 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(assert_zeropos, x+24, y, 5, '_');  
   
+  /*
   // Show measurements counter
   y+=16;
   myGLCD.setColor(255, 255, 255);
@@ -320,7 +321,6 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(measurements, x+24, y);
   
-  /*
   // Show analog measurement
   y+=16;
   myGLCD.setColor(255, 255, 255);
