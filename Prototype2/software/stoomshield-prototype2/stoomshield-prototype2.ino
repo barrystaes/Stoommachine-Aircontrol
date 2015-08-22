@@ -35,7 +35,7 @@ const int rpm_wheelsteps = 672;
 // Valve timings
 
 int pinValveAin_posStart = 50;
-int pinValveAin_posStop = 120;
+int pinValveAin_posStop = 85;
 int pinValveAout_posStart = 220;
 int pinValveAout_posStop = 645;
 
