@@ -34,10 +34,10 @@ const int rpm_wheelsteps = 672;
 
 // Valve timings
 
-int pinValveAin_posStart = 0;
-int pinValveAin_posStop = 180;
-int pinValveAout_posStart = 380;
-int pinValveAout_posStop = 670;
+int pinValveAin_posStart = 50;
+int pinValveAin_posStop = 190;
+int pinValveAout_posStart = 220;
+int pinValveAout_posStop = 645;
 
 // Variables
 volatile int errors_greycode = 0;
@@ -208,7 +208,7 @@ void setOutputs() {
   
   
   digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
-  digitalWrite(pinValveAout, !outputValveAout);
+  digitalWrite(pinValveAout, !outputValveAout); 
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
