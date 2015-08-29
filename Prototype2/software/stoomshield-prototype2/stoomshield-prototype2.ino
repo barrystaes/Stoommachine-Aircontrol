@@ -33,11 +33,11 @@ const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
 
 // Valve timings
-
-int pinValveAin_posStart = 50;
-int pinValveAin_posStop = 85;
-int pinValveAout_posStart = 220;
-int pinValveAout_posStop = 645;
+int pinValveAin_posStart = 0;
+int pinValveAin_posStop = 37;
+int pinValveAout_posStart = 112;
+int pinValveAout_posStop = 653;
+// ^ Berekend met simulatie model van Rik
 
 // Variables
 volatile int errors_greycode = 0;
@@ -349,6 +349,15 @@ void loop() {
   
   myGLCD.print(outputValveAin  ? "ValveAin " : "         ", 160, 96);
   myGLCD.print(outputValveAout ? "ValveAout" : "         ", 160,112);
+  
+  if (noErrors()) {
+    myGLCD.setColor(0, 255, 0);
+    myGLCD.print("ok...", 160,144);
+  } else {
+    myGLCD.setColor(255, 0, 0);
+    myGLCD.print("error", 160,144);
+  }
+  myGLCD.setColor(255, 255, 255);
   
   // TODO render display
   myRevLog.Render(myGLCD);
