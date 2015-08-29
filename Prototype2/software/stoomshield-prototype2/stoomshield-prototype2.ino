@@ -203,12 +203,21 @@ int8_t read_encoder(uint8_t ab)
 }
 
 void setOutputs() {
-  outputValveAin  = inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
-  outputValveAout = inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
+  bool ok = noErrors();
+  outputValveAin  = ok && inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
+  outputValveAout = ok && inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
   
-  
+  // Actuate
   digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
-  digitalWrite(pinValveAout, !outputValveAout); 
+  digitalWrite(pinValveAout, !outputValveAout); \
+}
+
+bool noErrors() {
+  return (
+    (assert_zeropos > 1) &&
+    (errors_zeromis < 10) &&
+    (errors_greycode < 100)
+  );
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
