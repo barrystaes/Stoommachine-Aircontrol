@@ -17,6 +17,7 @@ struct estop_red_flags
 	bool EmergencyStopOn;
 	bool AirPressure;
 	bool ZeroSensor;
+	bool GreycodeSensor;	// Quadratic encoder has greycode so can detect measurement errors
 	bool ReverseRPM;
 	bool OverspeedRPM;
 
@@ -30,7 +31,7 @@ class Fouten
 public:
 	Fouten(int pinSleutelNO, int pinSleutelNC);
 	void Defaults();
-	void ReadInputs(int assert_zeropos, int error_zeropos, float rpm);
+	void ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int errors_greycode);
 
 	estop_red_flags getRedFlags();
 	bool hasRedFlags();

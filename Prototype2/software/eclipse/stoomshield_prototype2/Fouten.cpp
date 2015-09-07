@@ -26,17 +26,19 @@ void Fouten::Defaults()
 	redflags.KeyNotOn = true;
 	redflags.EmergencyStopOn = true;
 	redflags.ZeroSensor = true;
+	redflags.GreycodeSensor = true;
 	redflags.AirPressure = true;
 	redflags.ReverseRPM = true;
 	redflags.OverspeedRPM = true;
 }
 
 
-void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm)
+void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int errors_greycode)
 {
 	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == HIGH); //|| (digitalRead(pin_SleutelNC) == LOW);
 	redflags.EmergencyStopOn = false; // TODO
-	redflags.ZeroSensor = false; //(assert_zeropos < 2) || (error_zeropos > 10);
+	redflags.ZeroSensor = (assert_zeropos < 2) || (error_zeropos > 10);
+	redflags.GreycodeSensor = errors_greycode > 100;
 	redflags.AirPressure = false; // TODO
 	redflags.ReverseRPM = rpm < 0;
 	redflags.OverspeedRPM = rpm > 100;
@@ -53,6 +55,7 @@ bool Fouten::hasRedFlags()
 	     redflags.KeyNotOn
 	  || redflags.EmergencyStopOn
 	  || redflags.ZeroSensor
+	  || redflags.GreycodeSensor
 	  || redflags.AirPressure
       || redflags.ReverseRPM
 	  || redflags.OverspeedRPM

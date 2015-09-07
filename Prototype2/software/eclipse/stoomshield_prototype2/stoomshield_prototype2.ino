@@ -153,7 +153,7 @@ void timer_SensorRead() {
   updateRPM();
   readInputs();
 
-  fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm);
+  fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm, errors_greycode);
 
   // set the outputs, which control the air valves
   writeOutputs();
@@ -224,20 +224,13 @@ void readInputs() {
 }
 
 void writeOutputs() {
-  bool ok = noErrors();
+  bool ok = not fouten.hasRedFlags();
   outputValveAin  = ok && inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
   outputValveAout = ok && inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
 
   // Actuate
   digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
   digitalWrite(pinValveAout, !outputValveAout); \
-}
-
-bool noErrors() {
-  return (
-	(fouten.hasRedFlags() == false) &&
-    (errors_greycode < 100)
-  );
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
@@ -373,7 +366,7 @@ void loop() {
   myGLCD.print(outputValveAin  ? "ValveAin " : "         ", 160, 96);
   myGLCD.print(outputValveAout ? "ValveAout" : "         ", 160,112);
 
-  if (noErrors()) {
+  if (not fouten.hasRedFlags()) {
     myGLCD.setColor(0, 255, 0);
     myGLCD.print("ok...", 160,144);
   } else {
