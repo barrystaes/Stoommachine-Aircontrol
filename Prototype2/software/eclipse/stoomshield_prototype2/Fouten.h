@@ -30,7 +30,7 @@ class Fouten
 public:
 	Fouten(int pinSleutelNO, int pinSleutelNC);
 	void Defaults();
-	void ReadInputs(int assert_zeropos, int error_zeropos, int rpm);
+	void ReadInputs(int assert_zeropos, int error_zeropos, float rpm);
 
 	estop_red_flags getRedFlags();
 	bool hasRedFlags();

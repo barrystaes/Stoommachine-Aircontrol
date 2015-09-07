@@ -27,6 +27,10 @@ int pinAnalog1 = A2; // A0
 int pinValveAin = 8;
 int pinValveAout= 9;
 
+// Bedieningspaneel
+int pinBtn2A_NO = 42;
+//int pinBtn2A_NC = 48;
+
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 
@@ -73,7 +77,7 @@ UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
 
-Fouten Fouten(46, 48);
+Fouten fouten(42, 43);
 
 
 void setup() {
@@ -86,6 +90,8 @@ void setup() {
 
   pinMode(pinValveAin, OUTPUT);
   pinMode(pinValveAout, OUTPUT);
+
+  //pinMode(pinBtn2A_NO, INPUT_PULLUP);
 
   // Setup display
 
@@ -103,8 +109,6 @@ void setup() {
 
   myRevLog.Init();
   myRevLog.RenderBackdrop(myGLCD);
-
-  fouten.Init();
 
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
@@ -149,7 +153,7 @@ void timer_SensorRead() {
   updateRPM();
   readInputs();
 
-  fouten.ReadInputs();
+  fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm);
 
   // set the outputs, which control the air valves
   writeOutputs();
@@ -216,6 +220,7 @@ int8_t read_encoder(uint8_t ab)
 void readInputs() {
   btn2_groen = digitalRead(pinBtn2A_NO);
   // TODO doublecheck pinBtn2A_NC
+//  btn2_groen = fouten.hasRedFlags(); // test
 }
 
 void writeOutputs() {
@@ -230,8 +235,7 @@ void writeOutputs() {
 
 bool noErrors() {
   return (
-    (assert_zeropos > 1) &&
-    (errors_zeromis < 10) &&
+	(fouten.hasRedFlags() == false) &&
     (errors_greycode < 100)
   );
 }
@@ -364,7 +368,7 @@ void loop() {
   myGLCD.print(s3 ? "SENSOR3" : "       ", 160, 64);
 
   //test
-  myGLCD.print(btn2_groen ? "BTN2_GROEN" : "BTN2_groen", 120, 80);
+  myGLCD.print(btn2_groen ? "BTN2_GROEN2" : "BTN2_groen2", 120, 80);
 
   myGLCD.print(outputValveAin  ? "ValveAin " : "         ", 160, 96);
   myGLCD.print(outputValveAout ? "ValveAout" : "         ", 160,112);

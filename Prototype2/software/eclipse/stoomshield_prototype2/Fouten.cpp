@@ -25,21 +25,21 @@ void Fouten::Defaults()
 	// Defaults
 	redflags.KeyNotOn = true;
 	redflags.EmergencyStopOn = true;
-	redflags.ZeroSensor  = true;
-	redflags.AirPressure  = true;
+	redflags.ZeroSensor = true;
+	redflags.AirPressure = true;
 	redflags.ReverseRPM = true;
 	redflags.OverspeedRPM = true;
 }
 
 
-void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, int rpm)
+void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm)
 {
-	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == LOW) || (digitalRead(pin_SleutelNO) == HIGH);
+	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == HIGH); //|| (digitalRead(pin_SleutelNC) == LOW);
 	redflags.EmergencyStopOn = false; // TODO
-	redflags.ZeroSensor = (assert_zeropos > 2) && (error_zeropos < 10);
+	redflags.ZeroSensor = false; //(assert_zeropos < 2) || (error_zeropos > 10);
 	redflags.AirPressure = false; // TODO
-	redflags.ReverseRPM = rpm >= 0;
-	redflags.OverspeedRPM = rpm < 100;
+	redflags.ReverseRPM = rpm < 0;
+	redflags.OverspeedRPM = rpm > 100;
 }
 
 estop_red_flags Fouten::getRedFlags()
