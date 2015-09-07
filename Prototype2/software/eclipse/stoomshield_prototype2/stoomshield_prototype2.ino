@@ -73,6 +73,14 @@ volatile bool btn2_groen = false;
 bool outputValveAin = false;
 bool outputValveAout = false;
 
+
+// RenderScreen parts
+int currentpage = 0;
+const int PAGEID_DEBUG = 0;
+const int PAGEID_GRAPH = 1;
+const int PAGEID_REDFLAGS = 2;
+
+
 UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
@@ -263,7 +271,44 @@ void loop() {
     mps_timeold = now;
   }
 
+  // test toon elke 3 seconden een andere pagina
+  int page = (measurements / 30000) % 3;
 
+  renderScreen(page);
+
+  delay(10);
+}
+
+void renderScreen(int page)
+{
+	static int prevpage = -1;
+	bool clearscreen = prevpage != page;
+	prevpage = page;
+	if (clearscreen) {
+		myGLCD.clrScr();
+		myGLCD.setFont(BigFont);
+		myGLCD.setColor(255, 255, 255);
+		myGLCD.print("De Stoommachine", LEFT, 0);
+		myGLCD.drawLine(0,20,239,20);
+		myGLCD.setFont(SmallFont);
+	}
+
+
+	switch (page) {
+		case PAGEID_DEBUG:
+			renderScreen_Debug();
+			break;
+		case PAGEID_GRAPH:
+			renderScreen_Graph();
+			break;
+		case PAGEID_REDFLAGS:
+			renderScreen_RedFlags();
+			break;
+	}
+}
+
+void renderScreen_Debug()
+{
   int y = 16;
   int x = 16;
 
@@ -283,13 +328,13 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(mps, x+24, y, 6, '_');
 
-//  // Show rotations per minute
-//  y+=16;
-//  myGLCD.setColor(255, 255, 255);
-//  myGLCD.setFont(SmallFont);
-//  myGLCD.print("RPM", x, y+4);
-//  myGLCD.setFont(BigFont);
-//  myGLCD.printNumI(rpm, x+24, y, 4, '_');
+  // Show rotations per minute
+  y+=16;
+  myGLCD.setColor(255, 255, 255);
+  myGLCD.setFont(SmallFont);
+  myGLCD.print("RPM", x, y+4);
+  myGLCD.setFont(BigFont);
+  myGLCD.printNumI(rpm, x+24, y, 4, '_');
 
   // Show grey code errors
   y+=16;
@@ -299,13 +344,13 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(errors_greycode, x+24, y, 5, '_');
 
-  // Show machine position
-  y+=16;
-  myGLCD.setColor(255, 255, 255);
-  myGLCD.setFont(SmallFont);
-  myGLCD.print("POS", x, y+4);
-  myGLCD.setFont(BigFont);
-  myGLCD.printNumI(pos, x+24, y, 5, '_');
+	// Show machine position
+	y+=16;
+	myGLCD.setColor(255, 255, 255);
+	myGLCD.setFont(SmallFont);
+	myGLCD.print("POS", x, y+4);
+	myGLCD.setFont(BigFont);
+	myGLCD.printNumI(pos, x+24, y, 5, '_');
 
   // Show recurring measurements (i expect 20 or more)
   y+=16;
@@ -334,7 +379,6 @@ void loop() {
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(assert_zeropos, x+24, y, 5, '_');
 
-  /*
   // Show measurements counter
   y+=16;
   myGLCD.setColor(255, 255, 255);
@@ -350,7 +394,6 @@ void loop() {
   myGLCD.print("an1", x, y+4);
   myGLCD.setFont(BigFont);
   myGLCD.printNumI(analog1, x+24, y, 9, ' _');
-  */
 
 
   // Show raw sensor state
@@ -374,13 +417,20 @@ void loop() {
     myGLCD.print("error", 160,144);
   }
   myGLCD.setColor(255, 255, 255);
+}
 
+void renderScreen_Graph()
+{
   // TODO render display
   myRevLog.Render(myGLCD);
   myGLCD.setFont(BigFont);
   myRevLog.RenderValues(myGLCD, rpm, analog1, 0, outputValveAin, outputValveAout);
+}
 
-  delay(10);
+void renderScreen_RedFlags()
+{
+	estop_red_flags redflags = fouten.getRedFlags();
+	// TODO
 }
 
 int updateRPM() {
