@@ -8,6 +8,7 @@
 #include <DueTimer.h>
 #include <UTFT.h>
 #include "RevLog.h"
+#include "Fouten.h" // Veiligheid
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
@@ -76,6 +77,8 @@ UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
 
+Fouten fouten;
+
 
 void setup() {
   // Sensor wiring
@@ -107,6 +110,8 @@ void setup() {
 
   myRevLog.Init();
   myRevLog.RenderBackdrop(myGLCD);
+
+  fouten.Init();
 
   // Sensor timer
   Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
@@ -150,6 +155,9 @@ void timer_SensorRead() {
   // determine other values
   updateRPM();
   readInputs();
+
+  fouten.ReadInputs();
+
   // set the outputs, which control the air valves
   writeOutputs();
   // log values for this position.
