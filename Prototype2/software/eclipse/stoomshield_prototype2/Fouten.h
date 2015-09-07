@@ -10,27 +10,35 @@
 
 #include "Arduino.h"
 
+struct estop_red_flags
+{
+	// For all values goes:  true == a red flag == a problem
+	bool KeyNotOn;
+	bool EmergencyStopOn;
+	bool AirPressure;
+	bool ZeroSensor;
+	bool ReverseRPM;
+	bool OverspeedRPM;
+
+	/* todo?
+	bool PoweronDelay;
+	*/
+};
+
 class Fouten
 {
 public:
 	Fouten(int pinSleutelNO, int pinSleutelNC);
-	void Init();
-	void ReadInputs();
-private:
-	boolean errorSleutel;
-	boolean errorNoodstop;
-	boolean errorStuurlucht;
-	boolean errorPosInit;
-	// ideas:
-	//boolean errorNegativeRPM;
-	//boolean errorOverspeed;
-	//boolean errorPoweronDelay;
+	void Defaults();
+	void ReadInputs(int assert_zeropos, int error_zeropos, int rpm);
 
-	// Necessities
+	estop_red_flags getRedFlags();
+	bool hasRedFlags();
+private:
+	estop_red_flags redflags;
+
 	int pin_SleutelNO;
 	int pin_SleutelNC;
-	int pin_NoodstopNC;
-	int pin_StuurluchtNC;
 };
 
 

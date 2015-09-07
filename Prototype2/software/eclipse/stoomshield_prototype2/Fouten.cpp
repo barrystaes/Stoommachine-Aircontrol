@@ -11,25 +11,50 @@ Fouten::Fouten(int pinSleutelNO, int pinSleutelNC)
 {
 	pin_SleutelNO = pinSleutelNO;
 	pin_SleutelNC = pinSleutelNC;
-	pin_NoodstopNC = 0;
-	pin_StuurluchtNC = 0;
+
+	// Init hardware
+	pinMode(pin_SleutelNO, INPUT_PULLUP);
+	pinMode(pin_SleutelNC, INPUT_PULLUP);
+
+	// Init values
+	Defaults();
 }
 
-void Fouten::Init()
+void Fouten::Defaults()
 {
 	// Defaults
-	errorSleutel = true;
-	errorNoodstop = true;
-	errorStuurlucht = true;
-	errorPosInit = true;
-
-	// Do initial check
-	ReadInputs();
+	redflags.KeyNotOn = true;
+	redflags.EmergencyStopOn = true;
+	redflags.ZeroSensor  = true;
+	redflags.AirPressure  = true;
+	redflags.ReverseRPM = true;
+	redflags.OverspeedRPM = true;
 }
 
 
-void Fouten::ReadInputs()
+void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, int rpm)
 {
-	errorSleutel = (digitalRead(pin_SleutelNO) == LOW) && (digitalRead(pin_SleutelNO) == HIGH);
-	// TODO
+	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == LOW) || (digitalRead(pin_SleutelNO) == HIGH);
+	redflags.EmergencyStopOn = false; // TODO
+	redflags.ZeroSensor = (assert_zeropos > 2) && (error_zeropos < 10);
+	redflags.AirPressure = false; // TODO
+	redflags.ReverseRPM = rpm >= 0;
+	redflags.OverspeedRPM = rpm < 100;
+}
+
+estop_red_flags Fouten::getRedFlags()
+{
+	return redflags;
+}
+
+bool Fouten::hasRedFlags()
+{
+	return (
+	     redflags.KeyNotOn
+	  || redflags.EmergencyStopOn
+	  || redflags.ZeroSensor
+	  || redflags.AirPressure
+      || redflags.ReverseRPM
+	  || redflags.OverspeedRPM
+	);
 }

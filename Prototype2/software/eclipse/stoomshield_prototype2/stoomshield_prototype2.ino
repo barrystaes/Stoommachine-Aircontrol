@@ -27,10 +27,6 @@ int pinAnalog1 = A2; // A0
 int pinValveAin = 8;
 int pinValveAout= 9;
 
-// Bedieningspaneel
-int pinBtn2A_NO = 46; // green button normally-open
-int pinBtn2B_NC = 48; // green button normally-closed
-
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 
@@ -77,7 +73,7 @@ UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
 
-Fouten fouten;
+Fouten Fouten(46, 48);
 
 
 void setup() {
@@ -90,9 +86,6 @@ void setup() {
 
   pinMode(pinValveAin, OUTPUT);
   pinMode(pinValveAout, OUTPUT);
-
-  pinMode(pinBtn2A_NO, INPUT_PULLUP);
-  pinMode(pinBtn2B_NC, INPUT_PULLUP);
 
   // Setup display
 
