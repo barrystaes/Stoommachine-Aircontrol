@@ -427,10 +427,35 @@ void renderScreen_Graph()
 	myRevLog.RenderValues(myGLCD, rpm, analog1, 0, outputValveAin, outputValveAout);
 }
 
+void renderScreen_RedFlags_item(int x, int y, bool redflag, String name)
+{
+	if (redflag) {
+		myGLCD.setColor(255, 0, 0);
+	} else {
+		myGLCD.setColor(0, 0, 255);
+	}
+	myGLCD.fillCircle(x-8,y+8,8);
+	myGLCD.print(name, x, y);
+}
+
 void renderScreen_RedFlags()
 {
 	estop_red_flags redflags = fouten.getRedFlags();
-	// TODO
+
+	int y = 32;
+	int x = 24;
+
+	myGLCD.setFont(BigFont);
+
+	myGLCD.setColor(255, 255, 255);
+	myGLCD.print("Red flags:", CENTER, 16);
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.KeyNotOn,          "Sleutel");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.EmergencyStopOn,   "Noodstop");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.ZeroSensor,        "Wiel 0-sensor");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.GreycodeSensor,    "Wiel encoder");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
+	y+=16; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
 }
 
 int updateRPM() {
