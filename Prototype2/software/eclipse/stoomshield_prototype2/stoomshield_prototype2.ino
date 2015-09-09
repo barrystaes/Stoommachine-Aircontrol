@@ -74,11 +74,14 @@ bool outputValveAin = false;
 bool outputValveAout = false;
 
 
-// RenderScreen parts
-int currentpage = 0;
-const int PAGEID_DEBUG = 0;
-const int PAGEID_GRAPH = 1;
-const int PAGEID_REDFLAGS = 2;
+// Render state machine
+enum page_states_e {
+	PAGE__INIT_DONT_USE, // internal value to initialize
+	PAGE_DEBUG,
+	PAGE_GRAPH,
+	PAGE_REDFLAGS
+};
+page_states_e currentpage = PAGE_DEBUG;
 
 
 UTFT myGLCD(SSD1289,40,41,38,39);
@@ -274,14 +277,23 @@ void loop() {
 	// test toon elke 3 seconden een andere pagina
 	int page = (measurements / 30000) % 3;
 
+	// State machines:
 	renderScreen(page);
 
 	delay(10);
 }
 
-void renderScreen(int page)
+//--------------------------------------
+// Aircontrol statemachine
+
+
+
+//--------------------------------------
+// Menupage statemachine
+
+void renderScreen(page_states_e page)
 {
-	static int prevpage = -1;
+	static page_states_e prevpage = PAGE__INIT_DONT_USE; // invalid value on purpose
 	bool clearscreen = prevpage != page;
 	prevpage = page;
 	if (clearscreen) {
@@ -290,18 +302,17 @@ void renderScreen(int page)
 		myGLCD.setColor(255, 255, 255);
 		myGLCD.print("De Stoommachine", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
-		myGLCD.setFont(SmallFont);
 	}
 
-
+	// State machine
 	switch (page) {
-		case PAGEID_DEBUG:
+		case PAGE_DEBUG:
 			renderScreen_Debug();
 			break;
-		case PAGEID_GRAPH:
+		case PAGE_GRAPH:
 			renderScreen_Graph();
 			break;
-		case PAGEID_REDFLAGS:
+		case PAGE_REDFLAGS:
 			renderScreen_RedFlags();
 			break;
 	}
@@ -432,7 +443,7 @@ void renderScreen_RedFlags_item(int x, int y, bool redflag, String name)
 	if (redflag) {
 		myGLCD.setColor(255, 0, 0);
 	} else {
-		myGLCD.setColor(0, 0, 255);
+		myGLCD.setColor(0, 255, 0);
 	}
 	myGLCD.fillCircle(x-8,y+8,8);
 	myGLCD.print(name, x, y);
@@ -442,21 +453,24 @@ void renderScreen_RedFlags()
 {
 	estop_red_flags redflags = fouten.getRedFlags();
 
-	int y = 32;
+	int y = 48;
 	int x = 24;
 
 	myGLCD.setFont(BigFont);
 
 	myGLCD.setColor(255, 255, 255);
-	myGLCD.print("Red flags:", CENTER, 16);
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.KeyNotOn,          "Sleutel");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.EmergencyStopOn,   "Noodstop");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.ZeroSensor,        "Wiel 0-sensor");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.GreycodeSensor,    "Wiel encoder");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
-	y+=16; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
+	myGLCD.print("Red flags:", CENTER, 24);
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.KeyNotOn,          "Sleutel");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.EmergencyStopOn,   "Noodstop");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.ZeroSensor,        "Wiel 0-sensor");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.GreycodeSensor,    "Wiel encoder");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
 }
+
+//--------------------------------------
+//
 
 int updateRPM() {
 	// Determine RPM.
