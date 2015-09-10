@@ -9,6 +9,7 @@
 #include <UTFT.h>
 #include "RevLog.h"
 #include "Fouten.h" // Veiligheid
+#include "workaround.h"
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
@@ -28,8 +29,7 @@ int pinValveAin = 8;
 int pinValveAout= 9;
 
 // Bedieningspaneel
-int pinBtn2A_NO = 42;
-//int pinBtn2A_NC = 48;
+int pinButtonGreenNO = 46;
 
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
@@ -74,14 +74,18 @@ bool outputValveAin = false;
 bool outputValveAout = false;
 
 
-// Render state machine
-enum page_states_e {
-	PAGE__INIT_DONT_USE, // internal value to initialize
-	PAGE_DEBUG,
-	PAGE_GRAPH,
-	PAGE_REDFLAGS
+enum aircontrol_states_e {
+	CONTROL__PREVSTATEINIT_DONT_USE, // internal use
+	CONTROL_INIT,
+	CONTROL_ESTOP,
+	CONTROL_READY,
+	CONTROL_RUNNING
 };
-page_states_e currentpage = PAGE_DEBUG;
+aircontrol_states_e currentControl = CONTROL_INIT;
+
+// Render state machine
+
+page_states_e currentPage = PAGE_DEBUG;
 
 
 UTFT myGLCD(SSD1289,40,41,38,39);
@@ -118,14 +122,19 @@ void setup() {
 	myGLCD.drawLine(0,20,239,20);
 	myGLCD.setFont(SmallFont);
 
+	while (!Serial);
+	Serial.begin(115200);
+	Serial.println('Aircontrol start');
+	delay(2000);
+
 	myRevLog.Init();
-	myRevLog.RenderBackdrop(myGLCD);
 
 	// Sensor timer
 	Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
 }
 
 void timer_SensorRead() {
+	// Encoder wheel
 	uint32_t pc = PIOC->PIO_PDSR & ENC1_PINS;
 
 	s1 = (pc & ENC1_PORT_SENSORA) != 0;
@@ -148,13 +157,11 @@ void timer_SensorRead() {
 					assert_zeropos++;
 				}
 			}
-
-			// DEBUG log pos to console?
-
 			pos = 0;
 		}
 		s3old = s3;
 	}
+
 
 
 	// can only do this 10000 times/second, and digitalWrite() is known to interfere with this.
@@ -166,9 +173,12 @@ void timer_SensorRead() {
 
 	fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm, errors_greycode);
 
-	// set the outputs, which control the air valves
+
+	// Business
+	smAircontrol();
 	writeOutputs();
-	// log values for this position.
+
+	// Log values for this position.
 	myRevLog.Log(
 		pos / REVLOG_DIVIDER,
 		rpm,
@@ -179,6 +189,7 @@ void timer_SensorRead() {
 		outputValveAout
 	);
 
+	// Debug
 	measurements++;
 	mps_i++;
 }
@@ -229,13 +240,13 @@ int8_t read_encoder(uint8_t ab)
 }
 
 void readInputs() {
-	btn2_groen = digitalRead(pinBtn2A_NO);
-	// TODO doublecheck pinBtn2A_NC
-	//  btn2_groen = fouten.hasRedFlags(); // test
+	btn2_groen = digitalRead(pinButtonGreenNO);
 }
 
 void writeOutputs() {
-	bool ok = not fouten.hasRedFlags();
+	// Security first
+	bool ok = (currentControl = CONTROL_RUNNING) and not fouten.hasRedFlags();
+
 	outputValveAin  = ok && inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
 	outputValveAout = ok && inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
 
@@ -274,48 +285,129 @@ void loop() {
 		mps_timeold = now;
 	}
 
-	// test toon elke 3 seconden een andere pagina
-	int page = (measurements / 30000) % 3;
-
 	// State machines:
-	renderScreen(page);
+	smScreen();
 
 	delay(10);
+
+	Serial.print('iif');
 }
 
 //--------------------------------------
 // Aircontrol statemachine
 
+void smAircontrol()
+{
+	static aircontrol_states_e prevstate = CONTROL__PREVSTATEINIT_DONT_USE; // invalid value on purpose
+	bool stateJustChanged = prevstate != currentControl;
 
+	static unsigned long timeStart = 0;
+
+	switch (currentControl) {
+		case CONTROL_INIT:
+			// wait a few seconds, then go to ESTOP
+			if (stateJustChanged) { timeStart = millis(); }
+			Serial.print('aah ');
+			Serial.println(millis());
+			if (millis() > (timeStart + 10000)) {
+				currentControl = CONTROL_ESTOP;
+			}
+			break;
+		case CONTROL_ESTOP:
+			// lists red flags to fix, then go to READY
+			if (not fouten.hasRedFlags()) {
+				currentControl = CONTROL_READY;
+			}
+			break;
+		case CONTROL_READY:
+			// waits for green button, then go to RUNNING
+			if (HIGH == digitalRead(pinButtonGreenNO)) { // TODO hold it for a second or so, while sounding alarm?
+				currentControl = CONTROL_RUNNING;
+			}
+			break;
+		case CONTROL_RUNNING:
+			// actuate valves
+
+			// Nothing to do here:
+			// the interrupt timer always passively gathers sensor data. And even actuating valves
+			// has to function continuously so it can respond to an emergency stop.
+			break;
+		default:
+			// NOP
+			break;
+	}
+}
 
 //--------------------------------------
 // Menupage statemachine
 
 void renderScreen(page_states_e page)
 {
-	static page_states_e prevpage = PAGE__INIT_DONT_USE; // invalid value on purpose
+	static page_states_e prevpage = PAGE__PREVPAGEINIT_DONT_USE; // invalid value on purpose
 	bool clearscreen = prevpage != page;
 	prevpage = page;
 	if (clearscreen) {
 		myGLCD.clrScr();
 		myGLCD.setFont(BigFont);
-		myGLCD.setColor(255, 255, 255);
+		myGLCD.setColor(0, 255, 0);
 		myGLCD.print("De Stoommachine", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
 	}
 
 	// State machine
 	switch (page) {
+		case PAGE_BOOT:
+			renderScreen_Boot();
+			break;
 		case PAGE_DEBUG:
 			renderScreen_Debug();
 			break;
 		case PAGE_GRAPH:
-			renderScreen_Graph();
+			renderScreen_Graph(clearscreen);
 			break;
 		case PAGE_REDFLAGS:
 			renderScreen_RedFlags();
 			break;
+		default:
+			// NOP
+			break;
 	}
+}
+
+void smScreen()
+{
+	// Some pages are forced by Control state
+	switch (currentControl) {
+		case CONTROL_INIT:
+			currentPage = PAGE_BOOT;
+			break;
+		default:
+			//currentPage = PAGE_DEBUG;
+
+			// test toon elke 3 seconden een andere pagina
+			int p = (measurements / 30000) % 3;
+
+			switch (p)
+			{
+				case 0: currentPage = PAGE_DEBUG; break;
+				case 1: currentPage = PAGE_GRAPH; break;
+				case 2: currentPage = PAGE_REDFLAGS; break;
+		        default: currentPage = PAGE_DEBUG; break;
+			}
+			break;
+	}
+
+	renderScreen(currentPage);
+}
+
+void renderScreen_Boot()
+{
+	//
+	myGLCD.setColor(255,255,255);
+	myGLCD.setFont(SmallFont);
+	myGLCD.print("BOOTING", 30, 50);
+
+	myGLCD.printNumI(millis(), 50, 80, 8, '_');
 }
 
 void renderScreen_Debug()
@@ -430,8 +522,11 @@ void renderScreen_Debug()
 	myGLCD.setColor(255, 255, 255);
 }
 
-void renderScreen_Graph()
+void renderScreen_Graph(bool clrscr)
 {
+	if (clrscr) {
+		myRevLog.RenderBackdrop(myGLCD);
+	}
 	//
 	myRevLog.Render(myGLCD);
 	myGLCD.setFont(BigFont);
@@ -472,7 +567,7 @@ void renderScreen_RedFlags()
 //--------------------------------------
 //
 
-int updateRPM() {
+void updateRPM() {
 	// Determine RPM.
 	if ((rpm_i > 40) || (rpm_timeold+1000 < millis())) {
 		long now2 = millis();
