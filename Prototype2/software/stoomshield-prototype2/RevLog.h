@@ -34,32 +34,32 @@ class RevLog
     int log_an2[REVLOG_SIZE]; // analog sensor (pressure transmitter)
     bool log_vAi[REVLOG_SIZE]; // Relay 1
     bool log_vAo[REVLOG_SIZE]; // Relay 2
-    
+
     // Appearance
     int border;
     int renderrow_bgcolor1;
     int renderrow_bgcolor2;
-    
+
     int rendery_rpm_color;
     int rendery_rpm_min;
     int rendery_rpm_max;
     int rendery_rpm_delta;
-  
+
     int rendery_an1_color;
     int rendery_an1_min;
     int rendery_an1_max;
     int rendery_an1_delta;
-    
+
     int rendery_vAi_color;
     int rendery_vAi_min;
     int rendery_vAi_max;
     int rendery_vAi_delta;
-    
+
     int rendery_vAo_color;
     int rendery_vAo_min;
     int rendery_vAo_max;
     int rendery_vAo_delta;
-    
+
     void RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, int value, int minY, int maxY);
     void RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, boolean value, int minY, int maxY);
 };

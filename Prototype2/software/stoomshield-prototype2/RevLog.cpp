@@ -15,30 +15,30 @@ RevLog::RevLog()
 void RevLog::Init()
 {
   Clear();
-  
+
   // Appearance
   border=1; // for border
-  
+
   renderrow_bgcolor1 = VGA_BLACK;
   renderrow_bgcolor2 = UTFColor(16,16,16);
-  
-  
-  
+
+
+
   rendery_vAi_color = VGA_GREEN;
   rendery_vAi_min = 171;
   rendery_vAi_max = 187;
   rendery_vAi_delta = rendery_vAi_max - rendery_vAi_min;
-  
+
   rendery_vAo_color = VGA_RED;
   rendery_vAo_min = 188;
   rendery_vAo_max = 204;
   rendery_vAo_delta = rendery_vAo_max - rendery_vAo_min;
-  
+
   rendery_rpm_color = VGA_PURPLE;
   rendery_rpm_min = 210;
   rendery_rpm_max = 240;
   rendery_rpm_delta = rendery_rpm_max - rendery_rpm_min;
-  
+
   rendery_an1_color = VGA_YELLOW;
   rendery_an1_min = 241;
   rendery_an1_max = 311;
@@ -72,11 +72,11 @@ void RevLog::Log(int pos, int rpm, int okr, int an1, int an2, bool relay1, bool 
   if ((pos < 0) || (pos >= REVLOG_SIZE)) {
     // Failsafe default
     pos = 0;
-    
+
     // LogBugNominate
     //Serial.print('LogBugNominate; RevLog.Log() pos out of bounds: (0<<',pos,'<<',REVLOG_SIZE,')');
   };
-  
+
   // Store data
   log_inv[pos] = true;
   log_rpm[pos] = rpm;
@@ -93,10 +93,10 @@ void RevLog::Render(UTFT myGLCD)
     // Is this log position invalidated? (changed by Log function)
     if (log_inv[i]) {
       log_inv[i] = false; // Resets invalidate.
-      
+
       RenderSlice(myGLCD, renderrow_bgcolor1, rendery_rpm_color, i + border, rendery_rpm_delta - ((log_rpm[i] * rendery_rpm_delta) /   30), rendery_rpm_min, rendery_rpm_max);
       RenderSlice(myGLCD, renderrow_bgcolor2, rendery_an1_color, i + border, rendery_an1_delta - ((log_an1[i] * rendery_an1_delta) / 1024), rendery_an1_min, rendery_an1_max);
-      
+
       RenderSlice(myGLCD, renderrow_bgcolor1, rendery_vAi_color, i + border, log_vAi[i], rendery_vAi_min, rendery_vAi_max);
       RenderSlice(myGLCD, renderrow_bgcolor2, rendery_vAo_color, i + border, log_vAo[i], rendery_vAo_min, rendery_vAo_max);
     }
@@ -109,7 +109,7 @@ void RevLog::RenderBackdrop(UTFT myGLCD) {
   myGLCD.drawRect(0, rendery_an1_min - border, 170, rendery_an1_max + border);
   myGLCD.print("RPM:", 174, rendery_rpm_min);
   myGLCD.print("Druk A:", 174, rendery_an1_min);
-  
+
   myGLCD.print("A-in:", 174, rendery_vAi_min);
   myGLCD.print("A-uit:", 174, rendery_vAo_min);
 }
@@ -118,7 +118,7 @@ void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2, bool relay1, b
   myGLCD.setColor(VGA_WHITE);
   myGLCD.printNumI(rpm, RIGHT, rendery_rpm_min+12, 4, ' ');
   myGLCD.printNumI(an1, RIGHT, rendery_an1_min+12, 4, ' ');
-  
+
   myGLCD.printNumI(relay1 ? 1 : 0, RIGHT, rendery_vAi_min, 1, ' ');
   myGLCD.printNumI(relay2 ? 1 : 0, RIGHT, rendery_vAo_min, 1, ' ');
 }
@@ -128,17 +128,17 @@ void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2, bool relay1, b
 void RevLog::RenderSlice(UTFT myGLCD, int UTFTbgcolor, int UTFTcolor, int X, int value, int minY, int maxY)
 {
   int valueY = value; // TODO add scale factor
-  
+
   // Out of bounds?
   int rangeY = maxY - minY;
   if ((valueY < 0) || (valueY > rangeY)) {
     // Failsafe default
     valueY = rangeY;
-    
+
     // LogBugNomintate
     //Serial.print('LogBugNominate; RevLog.RenderSlice() value out of bounds: (0<<',valueY,'<<',rangeY,')');
   }
-  
+
   myGLCD.setColor(UTFTbgcolor);
   myGLCD.drawLine(X, minY, X, maxY);
   myGLCD.setColor(UTFTcolor);
