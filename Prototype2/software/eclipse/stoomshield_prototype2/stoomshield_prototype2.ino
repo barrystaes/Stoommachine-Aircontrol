@@ -32,7 +32,7 @@ int pinValveAout= 9;
 int pinButtonGreenNO = 46;
 
 // Configure behavior
-const int SensorReadsPerSecond = 10000; // setting
+const int SensorReadsPerSecond = 1000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
@@ -81,11 +81,10 @@ enum aircontrol_states_e {
 	CONTROL_READY,
 	CONTROL_RUNNING
 };
-aircontrol_states_e currentControl = CONTROL_INIT;
+volatile aircontrol_states_e currentControl = CONTROL_INIT;
 
 // Render state machine
-
-page_states_e currentPage = PAGE_DEBUG;
+volatile page_states_e currentPage = PAGE_DEBUG;
 
 
 UTFT myGLCD(SSD1289,40,41,38,39);
@@ -122,9 +121,12 @@ void setup() {
 	myGLCD.drawLine(0,20,239,20);
 	myGLCD.setFont(SmallFont);
 
+	/* For whatever reason, Serial output wont work on this Arduino Due. Interrupts?
 	while (!Serial);
 	Serial.begin(115200);
-	Serial.println('Aircontrol start');
+	Serial.println("Aircontrol start");
+
+	*/
 	delay(2000);
 
 	myRevLog.Init();
@@ -288,9 +290,10 @@ void loop() {
 	// State machines:
 	smScreen();
 
-	delay(10);
+	//Serial.println("chickens");
+	//Serial.println(millis());
 
-	Serial.print('iif');
+	delay(10);
 }
 
 //--------------------------------------
@@ -305,27 +308,33 @@ void smAircontrol()
 
 	switch (currentControl) {
 		case CONTROL_INIT:
+			Serial.print("CONTROL_INIT");
 			// wait a few seconds, then go to ESTOP
-			if (stateJustChanged) { timeStart = millis(); }
-			Serial.print('aah ');
-			Serial.println(millis());
+			if (stateJustChanged) {
+				timeStart = millis();
+				//Serial.print("veranderd. timeStart=");
+				//Serial.println(timeStart);
+			}
 			if (millis() > (timeStart + 10000)) {
 				currentControl = CONTROL_ESTOP;
 			}
 			break;
 		case CONTROL_ESTOP:
+			//Serial.print("CONTROL_ESTOP");
 			// lists red flags to fix, then go to READY
 			if (not fouten.hasRedFlags()) {
 				currentControl = CONTROL_READY;
 			}
 			break;
 		case CONTROL_READY:
+			//Serial.print("CONTROL_READY");
 			// waits for green button, then go to RUNNING
 			if (HIGH == digitalRead(pinButtonGreenNO)) { // TODO hold it for a second or so, while sounding alarm?
 				currentControl = CONTROL_RUNNING;
 			}
 			break;
 		case CONTROL_RUNNING:
+			//Serial.print("CONTROL_RUNNING");
 			// actuate valves
 
 			// Nothing to do here:
