@@ -4,6 +4,8 @@
   Licence: ISC (Internet Systems Consortium)
 */
 
+//#define DEBUG
+
 // Includes
 #include <DueTimer.h>
 #include <UTFT.h>
@@ -74,17 +76,10 @@ bool outputValveAin = false;
 bool outputValveAout = false;
 
 
-enum aircontrol_states_e {
-	CONTROL__PREVSTATEINIT_DONT_USE, // internal use
-	CONTROL_INIT,
-	CONTROL_ESTOP,
-	CONTROL_READY,
-	CONTROL_RUNNING
-};
-volatile aircontrol_states_e currentControl = CONTROL_INIT;
+aircontrol_states_e currentControl = CONTROL_INIT;
 
 // Render state machine
-volatile page_states_e currentPage = PAGE_DEBUG;
+page_states_e currentPage = PAGE_DEBUG;
 
 
 UTFT myGLCD(SSD1289,40,41,38,39);
@@ -95,6 +90,8 @@ Fouten fouten(42, 43);
 
 
 void setup() {
+	//smAircontrolSet(CONTROL_INIT);
+
 	// Sensor wiring
 	pinMode(pinSensor1, INPUT_PULLUP);
 	pinMode(pinSensor2, INPUT_PULLUP);
@@ -121,18 +118,30 @@ void setup() {
 	myGLCD.drawLine(0,20,239,20);
 	myGLCD.setFont(SmallFont);
 
-	/* For whatever reason, Serial output wont work on this Arduino Due. Interrupts?
+#ifdef DEBUG
+	/* For whatever reason, Serial output wont work on this Arduino Due. Interrupts? */
 	while (!Serial);
 	Serial.begin(115200);
-	Serial.println("Aircontrol start");
-
-	*/
-	delay(2000);
+	Serial.println("Air1control start");
+	delay(1000);
+#endif
 
 	myRevLog.Init();
 
+#ifdef DEBUG
+	delay(1000);
+	Serial.println("Air2control timer start");
+	delay(1000);
+#endif
+
 	// Sensor timer
 	Timer2.attachInterrupt(timer_SensorRead).setFrequency(SensorReadsPerSecond).start();
+
+#ifdef DEBUG
+	delay(1000);
+	Serial.println("Air3control setup done");
+	delay(1000);
+#endif
 }
 
 void timer_SensorRead() {
@@ -269,6 +278,9 @@ bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
 
 void loop() {
 	// This is the render loop
+#ifdef DEBUG
+	Serial.println("@ loop()");
+#endif
 
 	// Determine FPS.
 	fps_i++;
@@ -290,14 +302,41 @@ void loop() {
 	// State machines:
 	smScreen();
 
-	//Serial.println("chickens");
-	//Serial.println(millis());
-
 	delay(10);
 }
 
 //--------------------------------------
 // Aircontrol statemachine
+
+String smAircontrolAsString(aircontrol_states_e value)
+{
+	switch (value) {
+		case CONTROL_INIT:
+			return "CONTROL_INIT";
+			break;
+		case CONTROL_ESTOP:
+			return "CONTROL_ESTOP";
+			break;
+		case CONTROL_READY:
+			return "CONTROL_READY";
+			break;
+		case CONTROL_RUNNING:
+			return "CONTROL_RUNNING";
+			break;
+		default:
+			return "CONTROL_??";
+			break;
+	}
+}
+
+void smAircontrolSet(aircontrol_states_e newvalue)
+{
+	currentControl = newvalue;
+#ifdef DEBUG
+	Serial.println("Control changed to ");
+	Serial.println(smAircontrolAsString(currentControl));
+#endif
+}
 
 void smAircontrol()
 {
@@ -308,7 +347,7 @@ void smAircontrol()
 
 	switch (currentControl) {
 		case CONTROL_INIT:
-			Serial.print("CONTROL_INIT");
+			//Serial.println("CONTROL_INIT *"); // could use a #ifdef DEBUG
 			// wait a few seconds, then go to ESTOP
 			if (stateJustChanged) {
 				timeStart = millis();
@@ -316,30 +355,31 @@ void smAircontrol()
 				//Serial.println(timeStart);
 			}
 			if (millis() > (timeStart + 10000)) {
-				currentControl = CONTROL_ESTOP;
+				smAircontrolSet(CONTROL_ESTOP);
 			}
 			break;
 		case CONTROL_ESTOP:
-			//Serial.print("CONTROL_ESTOP");
+			//Serial.println("CONTROL_ESTOP *");
 			// lists red flags to fix, then go to READY
 			if (not fouten.hasRedFlags()) {
-				currentControl = CONTROL_READY;
+				smAircontrolSet(CONTROL_READY);
 			}
 			break;
 		case CONTROL_READY:
-			//Serial.print("CONTROL_READY");
+			//Serial.println("CONTROL_READY *");
 			// waits for green button, then go to RUNNING
 			if (HIGH == digitalRead(pinButtonGreenNO)) { // TODO hold it for a second or so, while sounding alarm?
-				currentControl = CONTROL_RUNNING;
+				smAircontrolSet(CONTROL_RUNNING);
 			}
 			break;
 		case CONTROL_RUNNING:
-			//Serial.print("CONTROL_RUNNING");
+			//Serial.println("CONTROL_RUNNING");
 			// actuate valves
 
 			// Nothing to do here:
 			// the interrupt timer always passively gathers sensor data. And even actuating valves
 			// has to function continuously so it can respond to an emergency stop.
+			// Other processes may change state back to CONTROL_ESTOP.
 			break;
 		default:
 			// NOP
@@ -349,6 +389,27 @@ void smAircontrol()
 
 //--------------------------------------
 // Menupage statemachine
+
+String smScreenAsString(page_states_e value)
+{
+	switch (value) {
+		case PAGE_BOOT:
+			return "PAGE_BOOT";
+			break;
+		case PAGE_DEBUG:
+			return "PAGE_DEBUG";
+			break;
+		case PAGE_GRAPH:
+			return "PAGE_GRAPH";
+			break;
+		case PAGE_REDFLAGS:
+			return "PAGE_REDFLAGS";
+			break;
+		default:
+			return "PAGE_??";
+			break;
+	}
+}
 
 void renderScreen(page_states_e page)
 {
@@ -361,6 +422,11 @@ void renderScreen(page_states_e page)
 		myGLCD.setColor(0, 255, 0);
 		myGLCD.print("De Stoommachine", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
+
+#ifdef DEBUG
+		Serial.print("Screen changed to ");
+		Serial.println(smScreenAsString(page));
+#endif
 	}
 
 	// State machine

@@ -11,6 +11,14 @@
 #include "Arduino.h"
 
 
+enum aircontrol_states_e {
+	CONTROL__PREVSTATEINIT_DONT_USE, // internal use
+	CONTROL_INIT,
+	CONTROL_ESTOP,
+	CONTROL_READY,
+	CONTROL_RUNNING
+};
+
 enum page_states_e {
 	PAGE__PREVPAGEINIT_DONT_USE, // internal use
 	PAGE_BOOT,
