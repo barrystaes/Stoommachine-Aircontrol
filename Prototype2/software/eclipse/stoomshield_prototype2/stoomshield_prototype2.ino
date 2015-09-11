@@ -27,11 +27,18 @@ uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
 int pinAnalog1 = A2; // A0
 
+// Outputs
 int pinValveAin = 8;
 int pinValveAout= 9;
 
-// Bedieningspaneel
+// Inputs: Bedieningspaneel
+int pinButtonSleutelNO = 42;
+int pinButtonSleutelNC = 44; // of andersom?
 int pinButtonGreenNO = 46;
+//int pinButtonGreenNC = 48; // pin defect?
+//int pinButtonDraaiDrukNO = 50;
+//int pinButtonDraaiA = 52;
+//int pinButtonDraaiB = 53;
 
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
@@ -86,7 +93,7 @@ UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
 
-Fouten fouten(42, 43);
+Fouten fouten(pinButtonSleutelNO, pinButtonSleutelNC);
 
 
 void setup() {
@@ -183,8 +190,12 @@ void timer_SensorRead() {
 	updateRPM();
 	readInputs();
 
+	// Safety checks
 	fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm, errors_greycode);
-
+	if ((currentControl==CONTROL_RUNNING) && fouten.hasRedFlags())
+	{
+		currentControl = CONTROL_ESTOP; //smAircontrolSet(CONTROL_ESTOP);
+	}
 
 	// Business
 	smAircontrol();
@@ -454,6 +465,9 @@ void smScreen()
 	switch (currentControl) {
 		case CONTROL_INIT:
 			currentPage = PAGE_BOOT;
+			break;
+		case CONTROL_ESTOP:
+			currentPage = PAGE_REDFLAGS;
 			break;
 		default:
 			//currentPage = PAGE_DEBUG;

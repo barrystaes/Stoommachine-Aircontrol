@@ -35,12 +35,19 @@ void Fouten::Defaults()
 
 void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int errors_greycode)
 {
-	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == HIGH); //|| (digitalRead(pin_SleutelNC) == LOW);
+	// Doublecheck the switch using both the NO and NC contact.
+	redflags.KeyNotOn = (digitalRead(pin_SleutelNO) == HIGH) || (digitalRead(pin_SleutelNC) == LOW);
+
 	redflags.EmergencyStopOn = false; // TODO
+
 	redflags.ZeroSensor = (assert_zeropos < 2) || (error_zeropos > 10);
+
 	redflags.GreycodeSensor = errors_greycode > 100;
+
 	redflags.AirPressure = false; // TODO
+
 	redflags.ReverseRPM = rpm < 0;
+
 	redflags.OverspeedRPM = rpm > 100;
 }
 
