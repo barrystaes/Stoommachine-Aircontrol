@@ -20,6 +20,7 @@ class RevLog
     RevLog();
     void Init();
     void Clear();
+    void Invalidate();
     word UTFColor(byte r, byte g, byte b);
     void Log(int pos, int rpm, int okr, int an1, int an2, bool relay1, bool relay2);
     void Render(UTFT myGLCD);

@@ -624,6 +624,7 @@ void renderScreen_Graph(bool clrscr)
 {
 	if (clrscr) {
 		myRevLog.RenderBackdrop(myGLCD);
+		myRevLog.Invalidate();
 	}
 	//
 	myRevLog.Render(myGLCD);

@@ -58,6 +58,13 @@ void RevLog::Clear()
   }
 }
 
+void RevLog::Invalidate()
+{
+  for (int i=0; i<REVLOG_SIZE; i++) {
+    log_inv[i] = true;
+  }
+}
+
 word RevLog::UTFColor(byte r, byte g, byte b)
 {
   // based on UTFT::setColor()
