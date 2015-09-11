@@ -28,8 +28,8 @@ void Fouten::Defaults()
 	redflags.ZeroSensor = true;
 	redflags.GreycodeSensor = true;
 	redflags.AirPressure = true;
-	redflags.ReverseRPM = true;
-	redflags.OverspeedRPM = true;
+	redflags.ReverseRPM = false; // False because sticky
+	redflags.OverspeedRPM = false; // False because sticky
 }
 
 
@@ -42,13 +42,13 @@ void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int er
 
 	redflags.ZeroSensor = (assert_zeropos < 2) || (error_zeropos > 10);
 
-	redflags.GreycodeSensor = errors_greycode > 100;
+	redflags.GreycodeSensor = errors_greycode > 1000;
 
 	redflags.AirPressure = false; // TODO
 
-	redflags.ReverseRPM = rpm < 0;
+	redflags.ReverseRPM = redflags.ReverseRPM || (rpm < 0);
 
-	redflags.OverspeedRPM = rpm > 100;
+	redflags.OverspeedRPM = redflags.OverspeedRPM || (rpm > 1000);
 }
 
 estop_red_flags Fouten::getRedFlags()
