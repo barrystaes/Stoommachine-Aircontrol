@@ -342,6 +342,7 @@ void smAircontrol()
 {
 	static aircontrol_states_e prevstate = CONTROL__PREVSTATEINIT_DONT_USE; // invalid value on purpose
 	bool stateJustChanged = prevstate != currentControl;
+	prevstate = currentControl;
 
 	static unsigned long timeStart = 0;
 
