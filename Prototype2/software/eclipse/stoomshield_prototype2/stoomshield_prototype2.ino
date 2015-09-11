@@ -15,7 +15,7 @@
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
 
-// Configure wiring
+// Inputs: Wheel encoder
 int pinSensor1 = 51; //19; //78; // A
 int pinSensor2 = 49; //20; //79; // B
 int pinSensor3 = 47; //21; //80; // 0-punt
@@ -25,7 +25,8 @@ int pinSensor3 = 47; //21; //80; // 0-punt
 #define ENC1_PORT_SENSOR0 1<<16 // PC16 in variant.cpp
 uint32_t ENC1_PINS = ENC1_PORT_SENSORA | ENC1_PORT_SENSORB | ENC1_PORT_SENSOR0;
 
-int pinAnalog1 = A2; // A0
+// Inputs: Current loop
+int pinAnalog1 = A2; // A0 // Pressure Transmitter
 
 // Outputs
 int pinValveAin = 8;
@@ -39,6 +40,12 @@ int pinButtonGreenNO = 46;
 //int pinButtonDraaiDrukNO = 50;
 //int pinButtonDraaiA = 52;
 //int pinButtonDraaiB = 53;
+
+// Inputs: Noodstops
+int pinEStopLuchtdruk = 14; // (laag = druk goed)
+int pinEStopNoodstop1 = 15;
+int pinEStopNoodstop2 = 16;
+int pinEStopElektromotor = 17; // Elektromotor gekoppeld (dus hoog = niet draaien)
 
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
@@ -93,7 +100,14 @@ UTFT myGLCD(SSD1289,40,41,38,39);
 
 RevLog myRevLog;
 
-Fouten fouten(pinButtonSleutelNO, pinButtonSleutelNC);
+Fouten fouten(
+	pinButtonSleutelNO,
+	pinButtonSleutelNC,
+	pinEStopLuchtdruk,
+	pinEStopNoodstop1,
+	pinEStopNoodstop2,
+	pinEStopElektromotor
+);
 
 void MyLog(String text1, String text2)
 {
@@ -661,6 +675,7 @@ void renderScreen_RedFlags()
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.ElektroMotor,      "Elektromotor");
 
 	// For clarity, blink ready:
 	y = 270;

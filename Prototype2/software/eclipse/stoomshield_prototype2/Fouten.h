@@ -20,6 +20,7 @@ struct estop_red_flags
 	bool GreycodeSensor;	// Quadratic encoder has greycode so can detect measurement errors
 	bool ReverseRPM;
 	bool OverspeedRPM;
+	bool ElektroMotor;
 
 	/* todo?
 	bool PoweronDelay;
@@ -29,7 +30,7 @@ struct estop_red_flags
 class Fouten
 {
 public:
-	Fouten(int pinSleutelNO, int pinSleutelNC);
+	Fouten(int pinSleutelNO, int pinSleutelNC, int pin_EStopLuchtdruk, int pin_EStopNoodstop1, int pin_EStopNoodstop2, int pin_EStopElektromotor);
 	void Defaults();
 	void ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int errors_greycode);
 
@@ -40,6 +41,10 @@ private:
 
 	int pin_SleutelNO;
 	int pin_SleutelNC;
+	int pin_EStopLuchtdruk;
+	int pin_EStopNoodstop1;
+	int pin_EStopNoodstop2;
+	int pin_EStopElektromotor;
 };
 
 
