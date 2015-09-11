@@ -95,6 +95,15 @@ RevLog myRevLog;
 
 Fouten fouten(pinButtonSleutelNO, pinButtonSleutelNC);
 
+void MyLog(String text1, String text2)
+{
+#ifdef DEBUG
+	Serial.print(text1);
+	Serial.println(text2);
+#endif
+	// TODO keep a history that is shown as a page?
+}
+
 
 void setup() {
 	//smAircontrolSet(CONTROL_INIT);
@@ -341,10 +350,6 @@ String smAircontrolAsString(aircontrol_states_e value)
 void smAircontrolSet(aircontrol_states_e newvalue)
 {
 	currentControl = newvalue;
-#ifdef DEBUG
-	Serial.println("Control changed to ");
-	Serial.println(smAircontrolAsString(currentControl));
-#endif
 }
 
 void smAircontrol()
@@ -354,6 +359,12 @@ void smAircontrol()
 	prevstate = currentControl;
 
 	static unsigned long timeStart = 0;
+
+#ifdef DEBUG
+	if (stateJustChanged) {
+		MyLog("Control changed to ", smAircontrolAsString(currentControl));
+	}
+#endif
 
 	switch (currentControl) {
 		case CONTROL_INIT:
@@ -433,10 +444,7 @@ void renderScreen(page_states_e page)
 		myGLCD.print("De Stoommachine", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
 
-#ifdef DEBUG
-		Serial.print("Screen changed to ");
-		Serial.println(smScreenAsString(page));
-#endif
+		MyLog("Screen changed to ", smScreenAsString(page));
 	}
 
 	// State machine
@@ -467,6 +475,7 @@ void smScreen()
 			currentPage = PAGE_BOOT;
 			break;
 		case CONTROL_ESTOP:
+		case CONTROL_READY:
 			currentPage = PAGE_REDFLAGS;
 			break;
 		default:
