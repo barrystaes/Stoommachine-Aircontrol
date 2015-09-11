@@ -61,7 +61,7 @@ void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int er
 
 	redflags.OverspeedRPM = redflags.OverspeedRPM || (rpm > 1000);
 
-	redflags.ElektroMotor = (digitalRead(pin_EStopElektromotor) == LOW);
+	redflags.ElektroMotor = (digitalRead(pin_EStopElektromotor) == HIGH);
 }
 
 estop_red_flags Fouten::getRedFlags()
