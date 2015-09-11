@@ -201,7 +201,7 @@ void timer_SensorRead() {
 
 	// Safety checks
 	fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm, errors_greycode);
-	if ((currentControl==CONTROL_RUNNING) && fouten.hasRedFlags())
+	if (fouten.hasRedFlags() /* && (currentControl==CONTROL_RUNNING) */ )
 	{
 		currentControl = CONTROL_ESTOP; //smAircontrolSet(CONTROL_ESTOP);
 	}
@@ -389,8 +389,9 @@ void smAircontrol()
 		case CONTROL_READY:
 			//Serial.println("CONTROL_READY *");
 			// waits for green button, then go to RUNNING
-			if (HIGH == digitalRead(pinButtonGreenNO)) { // TODO hold it for a second or so, while sounding alarm?
+			if (digitalRead(pinButtonGreenNO) == LOW) { // TODO hold it for a second or so, while sounding alarm?
 				smAircontrolSet(CONTROL_RUNNING);
+				MyLog("Button pressed: ","Green");
 			}
 			break;
 		case CONTROL_RUNNING:
@@ -659,6 +660,22 @@ void renderScreen_RedFlags()
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
+
+	// For clarity, blink ready:
+	y = 270;
+	x = 50;
+	if (
+		(currentControl == CONTROL_READY) &&
+		(((millis() >> 10) % 2) == 0)
+	) {
+		myGLCD.setColor(255, 255, 255);
+		myGLCD.drawRoundRect(x,y,240-x,y+48);
+		myGLCD.print("READY", x+30, y+16);
+	} else {
+		myGLCD.setColor(0, 0, 0);
+		myGLCD.fillRect(x,y,240-x,y+48);
+	}
+
 }
 
 //--------------------------------------
