@@ -34,7 +34,7 @@ int pinValveAout= 9;
 int pinButtonGreenNO = 46;
 
 // Configure behavior
-const int SensorReadsPerSecond = 1000; // setting
+const int SensorReadsPerSecond = 10000; // setting
 
 const int pos_expectzero = 672;
 const int rpm_wheelsteps = 672;
@@ -355,7 +355,7 @@ void smAircontrol()
 				//Serial.print("veranderd. timeStart=");
 				//Serial.println(timeStart);
 			}
-			if (millis() > (timeStart + 10000)) {
+			if (millis() > (timeStart + 5000)) {
 				smAircontrolSet(CONTROL_ESTOP);
 			}
 			break;
