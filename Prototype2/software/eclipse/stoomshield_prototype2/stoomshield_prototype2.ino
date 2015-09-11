@@ -4,7 +4,7 @@
   Licence: ISC (Internet Systems Consortium)
 */
 
-//#define DEBUG
+#define DEBUG
 
 // Includes
 #include <DueTimer.h>
@@ -120,7 +120,8 @@ void setup() {
 
 #ifdef DEBUG
 	/* For whatever reason, Serial output wont work on this Arduino Due. Interrupts? */
-	while (!Serial);
+	//while (!Serial);
+	delay(2000);
 	Serial.begin(115200);
 	Serial.println("Air1control start");
 	delay(1000);
@@ -278,9 +279,6 @@ bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
 
 void loop() {
 	// This is the render loop
-#ifdef DEBUG
-	Serial.println("@ loop()");
-#endif
 
 	// Determine FPS.
 	fps_i++;
