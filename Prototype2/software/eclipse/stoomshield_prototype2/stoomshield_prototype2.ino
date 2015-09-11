@@ -247,7 +247,7 @@ void readInputs() {
 
 void writeOutputs() {
 	// Security first
-	bool ok = (currentControl = CONTROL_RUNNING) and not fouten.hasRedFlags();
+	bool ok = (currentControl == CONTROL_RUNNING) and not fouten.hasRedFlags();
 
 	outputValveAin  = ok && inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
 	outputValveAout = ok && inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
