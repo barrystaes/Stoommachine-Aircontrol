@@ -366,6 +366,13 @@ void smAircontrolSet(aircontrol_states_e newvalue)
 	currentControl = newvalue;
 }
 
+bool magMachineStarten() {
+	return (
+		!fouten.getRedFlags().ZeroSensor &&
+		inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop )
+	);
+}
+
 void smAircontrol()
 {
 	static aircontrol_states_e prevstate = CONTROL__PREVSTATEINIT_DONT_USE; // invalid value on purpose
@@ -403,9 +410,10 @@ void smAircontrol()
 		case CONTROL_READY:
 			//Serial.println("CONTROL_READY *");
 			// waits for green button, then go to RUNNING
-			if (digitalRead(pinButtonGreenNO) == LOW) { // TODO hold it for a second or so, while sounding alarm?
+			if ((digitalRead(pinButtonGreenNO) == LOW) && magMachineStarten()) {
 				smAircontrolSet(CONTROL_RUNNING);
 				MyLog("Button pressed: ","Green");
+				// TODO hold it for a second or so, while sounding alarm?
 			}
 			break;
 		case CONTROL_RUNNING:
@@ -676,6 +684,7 @@ void renderScreen_RedFlags()
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ElektroMotor,      "Elektromotor");
+	y+=20; renderScreen_RedFlags_item(x, y, !magMachineStarten(),       "Start pos.");
 
 	// For clarity, blink ready:
 	y = 270;
