@@ -25,22 +25,22 @@ void RevLog::Init()
 
 
   rendery_vAi_color = VGA_GREEN;
-  rendery_vAi_min = 171;
-  rendery_vAi_max = 187;
+  rendery_vAi_min = 71;
+  rendery_vAi_max = 87;
   rendery_vAi_delta = rendery_vAi_max - rendery_vAi_min;
 
   rendery_vAo_color = VGA_RED;
-  rendery_vAo_min = 188;
-  rendery_vAo_max = 204;
+  rendery_vAo_min = 88;
+  rendery_vAo_max = 104;
   rendery_vAo_delta = rendery_vAo_max - rendery_vAo_min;
 
-  rendery_rpm_color = VGA_PURPLE;
-  rendery_rpm_min = 210;
-  rendery_rpm_max = 240;
+  rendery_rpm_color = VGA_WHITE;
+  rendery_rpm_min = 110;
+  rendery_rpm_max = 190;
   rendery_rpm_delta = rendery_rpm_max - rendery_rpm_min;
 
   rendery_an1_color = VGA_YELLOW;
-  rendery_an1_min = 241;
+  rendery_an1_min = 191;
   rendery_an1_max = 311;
   rendery_an1_delta = rendery_an1_max - rendery_an1_min;
 }
@@ -125,6 +125,7 @@ void RevLog::RenderValues(UTFT myGLCD, int rpm, int an1, int an2, bool relay1, b
   myGLCD.setColor(VGA_WHITE);
   myGLCD.printNumI(rpm, RIGHT, rendery_rpm_min+12, 4, ' ');
   myGLCD.printNumI(an1, RIGHT, rendery_an1_min+12, 4, ' ');
+
 
   myGLCD.printNumI(relay1 ? 1 : 0, RIGHT, rendery_vAi_min, 1, ' ');
   myGLCD.printNumI(relay2 ? 1 : 0, RIGHT, rendery_vAo_min, 1, ' ');
