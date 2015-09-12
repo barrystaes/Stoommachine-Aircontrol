@@ -87,7 +87,7 @@ volatile int analog1 = 0;
 volatile bool btn2_groen = false;
 
 bool outputValveAin = false;
-bool outputValveAout = false;
+bool outputValveAout = false; // truetest
 
 
 aircontrol_states_e currentControl = CONTROL_INIT;
@@ -131,6 +131,9 @@ void setup() {
 
 	pinMode(pinValveAin, OUTPUT);
 	pinMode(pinValveAout, OUTPUT);
+
+	// Apply output defaults
+	writeOutputs();
 
 	//pinMode(pinBtn2A_NO, INPUT_PULLUP);
 
@@ -187,7 +190,10 @@ void timer_SensorRead() {
 	uint8_t ab = (s1<<1) | s2;
 	int delta = read_encoder(ab);
 	pos+=delta;
-	if (delta!=0) { rpm_i++; }
+	if (delta!=0) {
+		rpm_i++;
+		MyLog("POS: ", String(pos));
+	}
 
 	// Position reset
 	if (s3!=s3old) {  // only do this once,
@@ -293,12 +299,26 @@ void writeOutputs() {
 	// Security first
 	bool ok = (currentControl == CONTROL_RUNNING) and not fouten.hasRedFlags();
 
+	if (ok) {
+		// Inverted because relays are active low
+		digitalWrite(pinValveAin,  !inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop ));
+		digitalWrite(pinValveAout, !inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop));
+	} else {
+		digitalWrite(pinValveAin,  true);
+		digitalWrite(pinValveAin,  true);
+	}
+
+	// Pin HIGH = NC closed
+	// Pin LOW  = NO closed
+
+	/*
 	outputValveAin  = ok && inPosWrappedRange(pos, pinValveAin_posStart,  pinValveAin_posStop );
 	outputValveAout = ok && inPosWrappedRange(pos, pinValveAout_posStart, pinValveAout_posStop);
 
 	// Actuate
 	digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
 	digitalWrite(pinValveAout, !outputValveAout);
+	*/
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
