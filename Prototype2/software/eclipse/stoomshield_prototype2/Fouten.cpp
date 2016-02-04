@@ -7,12 +7,14 @@
 #include "Arduino.h"
 #include "Fouten.h"
 
-Fouten::Fouten(int pinSleutelNO, int pinSleutelNC, int pinEStopLuchtdruk,
+Fouten::Fouten(int pinSleutelNO, int pinSleutelNC,
+		int pinEStopLuchtdruk, int pinEStopOverdruk,
 		int pinEStopNoodstop1, int pinEStopNoodstop2, int pinEStopElektromotor)
 {
 	pin_SleutelNO = pinSleutelNO;
 	pin_SleutelNC = pinSleutelNC;
 	pin_EStopLuchtdruk = pinEStopLuchtdruk;
+	pin_EStopOverdruk = pinEStopOverdruk;
 	pin_EStopNoodstop1 = pinEStopNoodstop1;
 	pin_EStopNoodstop2 = pinEStopNoodstop2;
 	pin_EStopElektromotor = pinEStopElektromotor;
@@ -38,6 +40,7 @@ void Fouten::Defaults()
 	redflags.ZeroSensor = true;
 	redflags.GreycodeSensor = true;
 	redflags.AirPressure = true;
+	redflags.AirOverpressure = false; // False because sticky
 	redflags.ReverseRPM = false; // False because sticky
 	redflags.OverspeedRPM = false; // False because sticky
 	redflags.ElektroMotor = true;
@@ -56,6 +59,8 @@ void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int er
 	redflags.GreycodeSensor = errors_greycode > 1000;
 
 	redflags.AirPressure = (digitalRead(pin_EStopLuchtdruk) == LOW);
+
+	redflags.AirOverpressure = (digitalRead(pin_EStopOverdruk) == HIGH); // todo of LOW ?
 
 	redflags.ReverseRPM = redflags.ReverseRPM || (rpm < 0);
 
@@ -77,6 +82,7 @@ bool Fouten::hasRedFlags()
 	  || redflags.ZeroSensor
 	  || redflags.GreycodeSensor
 	  || redflags.AirPressure
+	  || redflags.AirOverpressure
       || redflags.ReverseRPM
 	  || redflags.OverspeedRPM
 	  || redflags.ElektroMotor

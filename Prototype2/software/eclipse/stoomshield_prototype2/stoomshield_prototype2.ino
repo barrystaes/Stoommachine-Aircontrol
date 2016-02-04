@@ -43,6 +43,7 @@ int pinButtonGreenNO = 46;
 
 // Inputs: Noodstops
 int pinEStopLuchtdruk = 14; // (laag = druk goed)
+int pinEStopOverdruk = 46; // todo
 int pinEStopNoodstop1 = 15;
 int pinEStopNoodstop2 = 16;
 int pinEStopElektromotor = 17; // Elektromotor gekoppeld (dus hoog = niet draaien)
@@ -104,6 +105,7 @@ Fouten fouten(
 	pinButtonSleutelNO,
 	pinButtonSleutelNC,
 	pinEStopLuchtdruk,
+	pinEStopOverdruk,
 	pinEStopNoodstop1,
 	pinEStopNoodstop2,
 	pinEStopElektromotor
@@ -681,6 +683,7 @@ void renderScreen_RedFlags()
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ZeroSensor,        "Wiel 0-sensor");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.GreycodeSensor,    "Wiel encoder");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.AirPressure,       "Luchtdruk");
+	y+=20; renderScreen_RedFlags_item(x, y, redflags.AirOverpressure,   "Overdruk"); // toevoer verbruikslucht
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.OverspeedRPM,      "Overspeed");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ReverseRPM,        "Achteruit");
 	y+=20; renderScreen_RedFlags_item(x, y, redflags.ElektroMotor,      "Elektromotor");
