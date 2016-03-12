@@ -43,7 +43,7 @@ int pinButtonGreenNO = 46;
 
 // Inputs: Noodstops
 int pinEStopLuchtdruk = 14; // (laag = druk goed)
-int pinEStopOverdruk = 46; // todo
+int pinEStopOverdruk = 45;  // klemnr 23
 int pinEStopNoodstop1 = 15;
 int pinEStopNoodstop2 = 16;
 int pinEStopElektromotor = 17; // Elektromotor gekoppeld (dus hoog = niet draaien)
