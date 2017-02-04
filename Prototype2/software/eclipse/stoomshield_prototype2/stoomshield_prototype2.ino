@@ -477,17 +477,17 @@ void renderScreen(page_states_e page)
 		case PAGE_BOOT:
 			renderScreen_Boot();
 			break;
-		case PAGE_DEBUG:
-			renderScreen_Debug();
-			break;
-		case PAGE_GRAPH:
-			renderScreen_Graph(clearscreen);
-			break;
-		case PAGE_REDFLAGS:
-			renderScreen_RedFlags();
-			break;
+//		case PAGE_DEBUG:
+//			renderScreen_Debug();
+//			break;
+//		case PAGE_GRAPH:
+//			renderScreen_Graph(clearscreen);
+//			break;
+//		case PAGE_REDFLAGS:
+//			renderScreen_RedFlags();
+//			break;
 		default:
-			// NOP
+			renderScreen_Debug();
 			break;
 	}
 }
@@ -519,6 +519,7 @@ void smScreen()
 			break;
 	}
 
+	currentPage = PAGE_DEBUG;
 	renderScreen(currentPage);
 }
 
