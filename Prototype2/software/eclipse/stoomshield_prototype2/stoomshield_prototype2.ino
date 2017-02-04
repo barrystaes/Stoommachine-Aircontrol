@@ -88,7 +88,7 @@ volatile int analog1 = 0;
 volatile bool btn2_groen = false;
 
 bool outputValveAin = false;
-bool outputValveAout = false;
+bool outputValveAout = true;
 
 
 aircontrol_states_e currentControl = CONTROL_INIT;
@@ -300,7 +300,13 @@ void writeOutputs() {
 
 	// Actuate
 	digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
-	digitalWrite(pinValveAout, !outputValveAout);
+	digitalWrite(pinValveAout, outputValveAout);
+
+	if (outputValveAout) {
+		Serial.println("ValveAout = 1");
+	} else {
+		Serial.println("ValveAout = 0");
+	}
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
@@ -466,7 +472,7 @@ void renderScreen(page_states_e page)
 		myGLCD.clrScr();
 		myGLCD.setFont(BigFont);
 		myGLCD.setColor(0, 255, 0);
-		myGLCD.print("De Stoommsim", LEFT, 0);
+		myGLCD.print("De Stoommsim2", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
 
 		MyLog("Screen changed to ", smScreenAsString(page));
