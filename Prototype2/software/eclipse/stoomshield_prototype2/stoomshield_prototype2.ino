@@ -51,14 +51,14 @@ int pinEStopElektromotor = 17; // Elektromotor gekoppeld (dus hoog = niet draaie
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 
-const int pos_expectzero = 672;
-const int rpm_wheelsteps = 672;
+const int pos_expectzero = 48; // 672
+const int rpm_wheelsteps = 48;
 
 // Valve timings
 int pinValveAin_posStart = 0;
-int pinValveAin_posStop = 56; // //47;
-int pinValveAout_posStart = 103; //121; //112;
-int pinValveAout_posStop = 644;
+int pinValveAin_posStop = 3; //56; // //47;
+int pinValveAout_posStart = 7; //103; //121; //112;
+int pinValveAout_posStop = 46; //644;
 // ^ Berekend met simulatie model van Rik
 
 // Variables
