@@ -51,14 +51,14 @@ int pinEStopElektromotor = 17; // Elektromotor gekoppeld (dus hoog = niet draaie
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 
-const int pos_expectzero = 48; // 672
-const int rpm_wheelsteps = 48;
+const int pos_expectzero = 96; // 672
+const int rpm_wheelsteps = 96;
 
 // Valve timings
 int pinValveAin_posStart = 0;
-int pinValveAin_posStop = 3; //56; // //47;
-int pinValveAout_posStart = 7; //103; //121; //112;
-int pinValveAout_posStop = 46; //644;
+int pinValveAin_posStop = 8; //56; // //47;
+int pinValveAout_posStart = 15; //103; //121; //112;
+int pinValveAout_posStop = 92; //644;
 // ^ Berekend met simulatie model van Rik
 
 // Variables
@@ -466,7 +466,7 @@ void renderScreen(page_states_e page)
 		myGLCD.clrScr();
 		myGLCD.setFont(BigFont);
 		myGLCD.setColor(0, 255, 0);
-		myGLCD.print("De Stoommachine", LEFT, 0);
+		myGLCD.print("De Stoommsim", LEFT, 0);
 		myGLCD.drawLine(0,20,239,20);
 
 		MyLog("Screen changed to ", smScreenAsString(page));
