@@ -88,7 +88,7 @@ volatile int analog1 = 0;
 volatile bool btn2_groen = false;
 
 bool outputValveAin = false;
-bool outputValveAout = true;
+bool outputValveAout = false;
 
 
 aircontrol_states_e currentControl = CONTROL_INIT;
@@ -300,13 +300,7 @@ void writeOutputs() {
 
 	// Actuate
 	digitalWrite(pinValveAin,  !outputValveAin ); // Inverted because relays are active low
-	digitalWrite(pinValveAout, outputValveAout);
-
-	if (outputValveAout) {
-		Serial.println("ValveAout = 1");
-	} else {
-		Serial.println("ValveAout = 0");
-	}
+	digitalWrite(pinValveAout, !outputValveAout);
 }
 
 bool inPosWrappedRange(int posAssert, int posStart, int posStop) {
