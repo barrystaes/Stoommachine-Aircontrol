@@ -1,6 +1,6 @@
 /*
-  Stoomshield-prototype2 software.
-  Created by Barry Staes, 2015.
+  Aircontrol software.
+  Barry Staes 2015-2017
   Licence: ISC (Internet Systems Consortium)
 */
 
