@@ -4,3 +4,6 @@ Changelog
 2017-06-14 Barry: nieuwe in-outputs
 2017-06-15 John: werkende encoders
 2017-06-18 John: menuknop debug
+2017-06-19 John+Barry: geinverteerde nul en elektrische aandrijfing
+
+

@@ -206,7 +206,7 @@ void timer_SensorRead() {
 
  s1 = (pc & ENC1_PORT_SENSORA) != 0;  
  s2 = (pc & ENC1_PORT_SENSORB) != 0;
- s3 = (pc & ENC1_PORT_SENSOR0) != 0;  
+ s3 = !(pc & ENC1_PORT_SENSOR0) != 0;  
 
 
                                        //     digitalWrite(pinSensor3; //
