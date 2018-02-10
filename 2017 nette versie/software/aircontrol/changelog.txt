@@ -1,0 +1,4 @@
+Changelog
+===========
+2017-06-14 Barry-John: kopie van GitHub naar Dropbox "2017 nette versie".
+

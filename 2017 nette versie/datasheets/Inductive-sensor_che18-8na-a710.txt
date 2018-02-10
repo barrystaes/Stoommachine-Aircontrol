@@ -1,0 +1,23 @@
+Inductive-sensor_che18-8na-a710
+
+inductive sensor detection 8mm
+
+
+werk spanning: 10-36V
+max schakel stroom 200mA
+detectie range 0-8mm
+
+
+connectoren:
+Bruin is plus
+Zwart is schakelcontact
+Blauw is min
+
+
+grootte: ongeveer 6,5 cm lang en een dikte van 1,8 cm
+
+
+gewicht: 115 gram
+
+
+From: http://www.samenkopen.net/action_product/830065/380859
