@@ -58,22 +58,22 @@ int pinButtonSleutelNC = 44; // of andersom?
 // pin 45 = zie noodstops
 int pinButtonGreenNO   = 46;
 //int pinButtonGreenNC   = 48; // pin defect?
-//int pinButtonDraaiDrukNO = 50;
+int pinButtonDraaiDrukNO = 50; //omschakeling display
 //int pinButtonDraaiA    = 52;
 //int pinButtonDraaiB    = 53;
 
 // Configure behavior
 const int SensorReadsPerSecond = 10000; // setting
 //--------------------------------------------------------------------------------------
-          const int pos_expectzero = 96; //672;
-          const int rpm_wheelsteps = 96; //672;
+const int pos_expectzero = 672;                          // 96; = simulatiestand   aantal gaatjes/tanden x 4
+const int rpm_wheelsteps = 672;                          // 96; = simulatiestand
 
-           // Valve timings
-          int pinValveAin_posStart = 0;
-          int pinValveAin_posStop = 4; //56; // //47;
-          int pinValveAout_posStart = 0; //644; //103; //121; //112;
-          int pinValveAout_posStop = 47;  //103; //644;
-           // ^ Berekend met simulatie model van Rik
+// Valve timings
+int pinValveAin_posStart = 0;                            // 1; = simulatiestand
+int pinValveAin_posStop = 56;      //47;                 // 8; = simulatiestand
+int pinValveAout_posStart = 644;   //103; //121; //112;  // 0; = simulatiestand
+int pinValveAout_posStop = 103;    //644;                //47; = simulatiestand
+// ^ Berekend met simulatie model van Rik
 //--------------------------------------------------------------------------------------
 
 // Variables
@@ -154,6 +154,7 @@ void setup() {
   pinMode(pinValveBin, OUTPUT);
   pinMode(pinValveBout, OUTPUT);
 
+  pinMode(pinLampAlgemeneStoring, OUTPUT); // rood
   pinMode(pinLampNormaalBedrijf, OUTPUT);  // groen
   pinMode(pinLampOverdruk, OUTPUT); // rood
   pinMode(pinLampReserved, OUTPUT);
@@ -329,8 +330,8 @@ void writeOutputs() {
   digitalWrite(pinValveBout, outputValveAout);
 
   // Signaal lampen
-  digitalWrite(pinLampAlgemeneStoring, ok);
-  digitalWrite(pinLampNormaalBedrijf,  !ok);
+  digitalWrite(pinLampAlgemeneStoring, !ok);
+  digitalWrite(pinLampNormaalBedrijf,  ok);
   digitalWrite(pinLampOverdruk,        fouten.getRedFlags().AirOverpressure);
 }
 
@@ -443,7 +444,7 @@ void smAircontrol()
     case CONTROL_READY:
       //Serial.println("CONTROL_READY *");
       // waits for green button, then go to RUNNING
-      if ((!digitalRead(pinButtonGreenNO) == HIGH) && magMachineStarten()) {
+      if ((digitalRead(pinButtonGreenNO) == HIGH) && magMachineStarten()) {
         smAircontrolSet(CONTROL_RUNNING);
         MyLog("Button pressed: ","Green");
         // TODO hold it for a second or so, while sounding alarm?
@@ -532,7 +533,9 @@ void smScreen()
       break;
     case CONTROL_ESTOP:
     case CONTROL_READY:
-      currentPage =  PAGE_REDFLAGS;             // PAGE_DEBUG;
+if ((digitalRead(pinButtonDraaiDrukNO)==LOW)  && (currentPage= PAGE_REDFLAGS));     //menudrukknop uit        
+if ((digitalRead(pinButtonDraaiDrukNO)==HIGH)  && (currentPage= PAGE_DEBUG));       //menudrukknop aan 
+
       break;
     default:
                            //       currentPage = PAGE_DEBUG;

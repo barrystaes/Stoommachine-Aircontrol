@@ -3,3 +3,4 @@ Changelog
 2017-06-14 Barry-John: kopie van GitHub naar Dropbox "2017 nette versie".
 2017-06-14 Barry: nieuwe in-outputs
 2017-06-15 John: werkende encoders
+2017-06-18 John: menuknop debug

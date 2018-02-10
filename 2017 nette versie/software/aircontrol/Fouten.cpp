@@ -67,7 +67,7 @@ void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int er
 
 	redflags.AirPressure = (!digitalRead(pin_EStopLuchtdruk) == HIGH);
 
-	redflags.AirOverpressure = (!digitalRead(pin_EStopOverdruk) == HIGH);
+	redflags.AirOverpressure = redflags.AirOverpressure || (!digitalRead(pin_EStopOverdruk) == HIGH);
 
 	redflags.ReverseRPM = redflags.ReverseRPM || (rpm < 0);
 
