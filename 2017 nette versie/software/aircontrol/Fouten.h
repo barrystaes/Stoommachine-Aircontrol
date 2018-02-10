@@ -22,6 +22,8 @@ struct estop_red_flags
 	bool ReverseRPM;
 	bool OverspeedRPM;
 	bool ElektroMotor;
+  bool TechStoring;
+  bool ZekeringF2;
 
 	/* todo?
 	bool PoweronDelay;
@@ -31,7 +33,7 @@ struct estop_red_flags
 class Fouten
 {
 public:
-	Fouten(int pinSleutelNO, int pinSleutelNC, int pinEStopLuchtdruk, int pinEStopOverdruk, int pinEStopNoodstop1, int pinEStopNoodstop2, int pinEStopElektromotor);
+	Fouten(int pinSleutelNO, int pinSleutelNC, int pinEStopLuchtdruk, int pinEStopOverdruk, int pinEStopNoodstop1, int pinEStopNoodstop2, int pinEStopElektromotor, int pinEStopTechStoring, int pinEStopZekeringF2);
 	void Defaults();
 	void ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int errors_greycode);
 
@@ -47,6 +49,8 @@ private:
 	int pin_EStopNoodstop1;
 	int pin_EStopNoodstop2;
 	int pin_EStopElektromotor;
+  int pin_EStopTechStoring;
+  int pin_EStopZekeringF2;
 };
 
 
