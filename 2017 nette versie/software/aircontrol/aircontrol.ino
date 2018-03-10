@@ -71,8 +71,8 @@ const int rpm_wheelsteps = 672;                          // 96; = simulatiestand
 
 // Valve timings
 int pinValveAin_posStart  =   0;    // 0 graden          // 1; = simulatiestand
-int pinValveAin_posStop   =  75;    // 40 graden         // 8; = simulatiestand
-int pinValveAout_posStart = 616;    // 330 graden        // 0; = simulatiestand
+int pinValveAin_posStop   =  56;    // 30 graden         // 8; = simulatiestand
+int pinValveAout_posStart = 560;    // 300 graden        // 0; = simulatiestand
 int pinValveAout_posStop  = 158;    // 85 graden         //47; = simulatiestand
 // ^ Berekend met simulatie model van Rik
 //--------------------------------------------------------------------------------------
