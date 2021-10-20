@@ -2,6 +2,8 @@
   Aircontrol software.
   Barry Staes 2015-2018
   John Steijger 2017-2018
+  Bas de Witte 2021
+  Laatst gewijzigd Inspuit later op 20-10-2021
   Licence: ISC (Internet Systems Consortium)
 */
 
@@ -70,11 +72,11 @@ const int pos_expectzero = 672;                          // 96; = simulatiestand
 const int rpm_wheelsteps = 672;                          // 96; = simulatiestand
 
 // Valve timings
-int pinValveAin_posStart  =   0;    // 0 graden          // 1; = simulatiestand
-int pinValveAin_posStop   =  56;    // 30 graden         // 8; = simulatiestand
-int pinValveAout_posStart = 560;    // 300 graden        // 0; = simulatiestand
-int pinValveAout_posStop  = 158;    // 85 graden         //47; = simulatiestand
-// ^ Berekend met simulatie model van Rik
+int pinValveAin_posStart  =   9;    // 5 graden          // 1; = simulatiestand
+int pinValveAin_posStop   =  75;    // 40 graden         // 8; = simulatiestand
+int pinValveAout_posStart = 597;    // 320 graden        // 0; = simulatiestand
+int pinValveAout_posStop  = 168;    // 90 graden         //47; = simulatiestand
+// ^ Berekend met gevoel en gehoor van Bas en John
 //--------------------------------------------------------------------------------------
 
 // Variables

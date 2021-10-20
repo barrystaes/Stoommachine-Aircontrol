@@ -6,5 +6,5 @@ Changelog
 2017-06-18 John: menuknop debug
 2017-06-19 John+Barry: geinverteerde nul en elektrische aandrijfing
 2018-02-03 John: inverteren nulsensor
-
+2021-10-20 Bas+Barry+John: nieuwe klep timing, finetune op gehoor
 

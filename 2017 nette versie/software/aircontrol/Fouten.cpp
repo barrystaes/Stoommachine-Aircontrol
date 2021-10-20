@@ -61,7 +61,7 @@ void Fouten::ReadInputs(int assert_zeropos, int error_zeropos, float rpm, int er
 
 	redflags.EmergencyStopOn = (!digitalRead(pin_EStopNoodstop1) == HIGH) && (!digitalRead(pin_EStopNoodstop2) == HIGH); // TODO
 
-	redflags.ZeroSensor = (assert_zeropos < 2) || (error_zeropos > 10);
+	redflags.ZeroSensor = (assert_zeropos < 2) || (error_zeropos > 20);
 
 	redflags.GreycodeSensor = errors_greycode > 1000;
 
