@@ -1,6 +1,6 @@
 /*
   Aircontrol software.
-  Barry Staes 2015-2018
+  Barry Staes 2015-2022
   John Steijger 2017-2018
   Bas de Witte 2021
   Laatst gewijzigd Inspuit later op 20-10-2021
@@ -243,6 +243,11 @@ void timer_SensorRead() {
   // determine other values
   updateRPM();
   readInputs();
+
+  // Workaround to reset Zero-Sensor errors by pressing the Start Button
+  if (btn2_groen && errors_zeromis > 5) {
+    errors_zeromis = 0;
+  }
 
   // Safety checks
   fouten.ReadInputs(assert_zeropos, errors_zeromis, rpm, errors_greycode);
